@@ -89,6 +89,12 @@ public:
      */
     void choiceMenu(int choice, std::string s);
 
+    /**
+     * adds driver to taxi center.
+     * @param driver is the driver.
+     */
+    void addDriver(Driver* driver);
+
 };
 
 

@@ -1,4 +1,4 @@
-//matan changes
+//matan changesbabla
 // Created by uriel on 01/01/17.
 //
 
@@ -10,9 +10,17 @@
 #include "src/sockets/Udp.h"
 #include "src/Driver.h"
 #include "src/StandardCab.h"
+#include "src/LuxuryCab.h"
 #include <unistd.h>
+#include <boost/serialization/access.hpp>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 
 using namespace std;
+
 
 int main(int argc, char *argv[]) {
     BeginningInfoReader beginningInfoReader;
@@ -42,6 +50,17 @@ int main(int argc, char *argv[]) {
     udp.sendData(serial_str);
 
     udp.reciveData(buffer, sizeof(buffer));
+
+
+    char buffer2[1024];
+    udp.reciveData(buffer2, sizeof(buffer2));///receiving data from the client
+    string str(buffer2, sizeof(buffer2));
+    BaseCab *taxi;///creating a pointer to driver test
+    boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
+    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
+    boost::archive::binary_iarchive ia(s2);
+    ia >> taxi;///serialized object will be put in this pointer to driversTest
+    std::cout << taxi->getCabId() << endl;
 
 
     return 0;

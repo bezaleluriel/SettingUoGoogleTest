@@ -4,8 +4,10 @@
 #include "src/MainFlow.h"
 //#include <boost/thread.hpp>
 #include <iostream>
+#include <boost/serialization/export.hpp>
 #include "src/sockets/Udp.h"
 #include "src/Driver.h"
+#include "src/StandardCab.h"
 
 
 /**
@@ -17,66 +19,21 @@
  */
 
 int main() {
-    std::cout << "Server Is Running" <<std::endl;
-    Udp udp(1, 5555);///opening port
-    udp.initialize();///connecting to port
-    char buffer[1024];
-    udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
-    string str(buffer, sizeof(buffer));
-    Driver *driver;///creating a pointer to driver test
-    boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
-    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
-    boost::archive::binary_iarchive ia(s2);
-    ia >> driver;///serialized object will be put in this pointer to driversTest
-    std::cout << driver->getId() << endl;
-
-  //  cout << buffer << endl;
-    udp.reciveData(buffer, sizeof(buffer));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//    std::cout << "Server Is Running" <<std::endl;
+//    Udp udp(1, 5555);///opening port
+//    udp.initialize();///connecting to port
+//    char buffer[1024];
+//    udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
+//    string str(buffer, sizeof(buffer));
+//    Driver *driver;///creating a pointer to driver test
+//    boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
+//    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
+//    boost::archive::binary_iarchive ia(s2);
+//    ia >> driver;///serialized object will be put in this pointer to driversTest
+//    std::cout << driver->getId() << endl;
+//
+//  //  cout << buffer << endl;
+//    udp.reciveData(buffer, sizeof(buffer));
 
 
 
@@ -117,7 +74,39 @@ int main() {
            mainFlow.choiceMenu();
         }
         if(choice == 1){
+            std::string a;
+            std::cin >> a;
+            std::cout << "Server Is Running" <<std::endl;
+            Udp udp(1, 5555);///opening port
+            udp.initialize();///connecting to port
+            char buffer[1024];
+            udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
+            string str(buffer, sizeof(buffer));
+            Driver *driver;///creating a pointer to driver test
+            boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
+            boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
+            boost::archive::binary_iarchive ia(s2);
+            ia >> driver;///serialized object will be put in this pointer to driversTest
+            std::cout << driver->getId() << endl;
 
+            mainFlow.choiceMenu(3,"0,1,H,R");
+            mainFlow.addDriver(driver);
+            BaseCab* taxi= driver->getTaxiCab();
+
+
+
+            std::string serial_str;
+            boost::iostreams::back_insert_device<std::string> inserter(serial_str);
+            boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
+            boost::archive::binary_oarchive oa(s);
+            oa << taxi;
+            s.flush();
+            char buffer2[1024];
+            udp.sendData(serial_str);
+
+
+            //  cout << buffer << endl;
+            udp.reciveData(buffer, sizeof(buffer));
         }
         else{
             std::cin >> s;

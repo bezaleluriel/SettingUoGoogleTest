@@ -28,7 +28,7 @@ public:
  */
 TEST_F(TaxiCenterTest, addDriver){
     std::string s;
-    taxiCenter.addDriver(1,20,'S',2,3);
+    taxiCenter.addDriver(1,20,MaritalStatus::Divorced ,2,3);
     EXPECT_TRUE((taxiCenter.getDriverList()->size() > 0));
 }
 /**
@@ -37,7 +37,7 @@ TEST_F(TaxiCenterTest, addDriver){
  */
 TEST_F(TaxiCenterTest, assignToClosestDriver){
     taxiCenter.addTaxiCab(1,1,'T','G');
-    taxiCenter.addDriver(12345, 50,'M', 20, 1);
+    taxiCenter.addDriver(12345, 50,MaritalStatus::Divorced, 20, 1);
     taxiCenter.addRide(1,0,0,2,2,1,25);
     taxiCenter.assignDrivers();
     EXPECT_TRUE(taxiCenter.getTripInfoList()->front()->getDriverId() == 12345);

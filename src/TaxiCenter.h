@@ -6,6 +6,7 @@
 #include "TripInformation.h"
 #include "Structure.h"
 #include "BaseCab.h"
+#include "MaritalStatus.h"
 
 /**
  * this class contains the information about all its' employees (drivers), their location, the
@@ -40,7 +41,7 @@ public:
     /**
      * adds a new driver to the taxi center list.
      */
-    void addDriver(int id, int age, char status, int experience, int vehicleId);
+    void addDriver(int id, int age, MaritalStatus status, int experience, int vehicleId);
 
     /**
      * creates a new taxi.

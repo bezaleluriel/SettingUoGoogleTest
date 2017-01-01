@@ -22,8 +22,13 @@ TaxiCenter::~TaxiCenter() {
     }
 }
 
-void TaxiCenter::addDriver(int id, int age, char status, int experience, int vehicleId) {
-    Driver* driver = new Driver(id, age, status, experience, vehicleId);
+void TaxiCenter::addDriver(int id, int age, MaritalStatus status, int experience, int vehicleId) {
+    char c;
+    if(status == MaritalStatus::Divorced){c = 'D';}
+    if(status == MaritalStatus::Married){c = 'M';}
+    if(status == MaritalStatus::Single){c = 'S';}
+    if(status == MaritalStatus::Widowed){c = 'W';}
+    Driver* driver = new Driver(id, age, c, experience, vehicleId);
     driversList.push_back(driver);
     std::list<BaseCab*>::iterator taxiIt = taxiCabsList.begin();
     //matches the driver with his taxi(the taxi that has the same vehicle id) and sets the taxi as his.

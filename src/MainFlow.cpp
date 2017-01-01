@@ -99,6 +99,12 @@ void MainFlow::choiceMenu() {
     taxiCenter.completeTrip();
 }
 
+void MainFlow::addDriver(Driver *driver) {
+    taxiCenter.addDriver(driver->getId(), driver->getAge(), driver->getMaritalStatus(),
+                         driver->getYearsOfExperience(), driver->getVehicleId());
+
+}
+
 
 
 
