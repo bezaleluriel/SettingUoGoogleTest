@@ -15,4 +15,3 @@ void StandardCab::move(Point p) {
 }
 
 
-BOOST_CLASS_EXPORT(StandardCab)

@@ -16,5 +16,5 @@ void LuxuryCab::move(Point p) {
     location = map->getNode(p);
 }
 
-BOOST_CLASS_EXPORT(LuxuryCab)
+
 

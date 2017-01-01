@@ -31,8 +31,8 @@
  * the b shortest way.
  * @return 0 in the end.
  */
-//BOOST_CLASS_EXPORT_GUID(StandardCab, "StandardCab")
-//BOOST_CLASS_EXPORT_GUID(LuxuryCab, "LuxuryCab")
+BOOST_CLASS_EXPORT_GUID(StandardCab, "StandardCab")
+BOOST_CLASS_EXPORT_GUID(LuxuryCab, "LuxuryCab")
 
 int main() {
 //    std::cout << "Server Is Running" <<std::endl;

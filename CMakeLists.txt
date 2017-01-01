@@ -43,7 +43,6 @@ add_executable(SettingUoGoogleTest ${SOURCE_FILES} main.cpp Tests/ClassName.h Te
 target_link_libraries(Server  ${Boost_LIBRARIES})
 target_link_libraries(Client  ${Boost_LIBRARIES})
 
-
 target_link_libraries(SettingUoGoogleTest ${Boost_LIBRARIES})
 add_subdirectory(lib/googletest-master)
 include_directories(lib/googletest-master/googletest/include)

@@ -24,8 +24,8 @@
 
 using namespace std;
 
-//BOOST_CLASS_EXPORT_GUID(StandardCab, "StandardCab")
-//BOOST_CLASS_EXPORT_GUID(LuxuryCab, "LuxuryCab")
+BOOST_CLASS_EXPORT_GUID(StandardCab, "StandardCab")
+BOOST_CLASS_EXPORT_GUID(LuxuryCab, "LuxuryCab")
 
 int main(int argc, char *argv[]) {
     BeginningInfoReader beginningInfoReader;
