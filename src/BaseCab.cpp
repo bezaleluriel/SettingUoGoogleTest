@@ -2,6 +2,7 @@
 // Created by matan on 13/12/16.
 //
 
+#include <boost/serialization/export.hpp>
 #include "BaseCab.h"
 
 
@@ -76,5 +77,4 @@ void BaseCab::setLocation(GridNode *location) {
 Point BaseCab::returnLocationInPoint() {
     return getLocation()->getPoint();
 }
-
 

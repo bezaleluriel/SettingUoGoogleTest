@@ -8,7 +8,21 @@
 #include "src/sockets/Udp.h"
 #include "src/Driver.h"
 #include "src/StandardCab.h"
+#include "src/LuxuryCab.h"
+#include <unistd.h>
+#include <boost/serialization/export.hpp>
+#include <boost/serialization/base_object.hpp>
 
+#include <boost/archive/tmpdir.hpp>
+
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/utility.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/assume_abstract.hpp>
+#include <boost/serialization/export.hpp>
 
 /**
  * main - this class gets input from user for size point start and end,
@@ -17,6 +31,8 @@
  * the b shortest way.
  * @return 0 in the end.
  */
+//BOOST_CLASS_EXPORT_GUID(StandardCab, "StandardCab")
+//BOOST_CLASS_EXPORT_GUID(LuxuryCab, "LuxuryCab")
 
 int main() {
 //    std::cout << "Server Is Running" <<std::endl;
@@ -34,9 +50,6 @@ int main() {
 //
 //  //  cout << buffer << endl;
 //    udp.reciveData(buffer, sizeof(buffer));
-
-
-
 
 
     MainFlow mainFlow;

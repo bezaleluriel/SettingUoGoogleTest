@@ -17,10 +17,15 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
+#include <boost/serialization/export.hpp>
+#include "src/StandardCab.h"
+#include "src/LuxuryCab.h"
+#include <boost/serialization/export.hpp>
 
 using namespace std;
 
+//BOOST_CLASS_EXPORT_GUID(StandardCab, "StandardCab")
+//BOOST_CLASS_EXPORT_GUID(LuxuryCab, "LuxuryCab")
 
 int main(int argc, char *argv[]) {
     BeginningInfoReader beginningInfoReader;
