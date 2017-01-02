@@ -18,7 +18,8 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
-
+using namespace std;
+using namespace boost::archive;
 
 /**
  * this class contains a point in it and surrounds it with more capabilities that will help to activate an
@@ -48,7 +49,6 @@ private:
         ar & upperNeighbor;
         ar & rightNeighbor;
         ar & lowerNeighbor;
-
     }
 
 

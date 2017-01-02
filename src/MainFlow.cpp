@@ -105,6 +105,10 @@ void MainFlow::addDriver(Driver *driver) {
 
 }
 
+ TaxiCenter* MainFlow::getTaxiCenter()  {
+    return &taxiCenter;
+}
+
 
 
 

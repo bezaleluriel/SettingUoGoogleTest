@@ -17,7 +17,8 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
-
+using namespace std;
+using namespace boost::archive;
 /**
  * this class is a basic point class containing an x and y value. it holds methods that help
  * it change it's values and return them and to compare itself to another point.

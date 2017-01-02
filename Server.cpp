@@ -102,9 +102,10 @@ int main() {
             ia >> driver;///serialized object will be put in this pointer to driversTest
             std::cout << driver->getId() << endl;
 
-            mainFlow.choiceMenu(3,"0,1,H,R");
+            //mainFlow.choiceMenu(3,"0,1,H,R");
             mainFlow.addDriver(driver);
-            BaseCab* taxi= driver->getTaxiCab();
+            Structure* grid2 = new Grid();
+            BaseCab* taxi= new StandardCab(0,1,'H','R',grid2);
 
 
 

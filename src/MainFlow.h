@@ -95,7 +95,7 @@ public:
      */
     void addDriver(Driver* driver);
 
-
+    TaxiCenter* getTaxiCenter();
 };
 
 
