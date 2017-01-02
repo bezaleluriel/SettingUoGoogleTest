@@ -85,10 +85,28 @@ int main(int argc, char *argv[]) {
         luxuryCab = new LuxuryCab(cabId, taxiType, manufacturer, color, map);
         luxuryCab->setLocation(map->getNode(Point(0,0)));
     }
-
+taxiInfo
     ///test
     std::cout << standardCab->getCabId() << std::endl;
     std::cout << standardCab->getTaxiType() << std::endl;
+    udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
+
+
+    /// desirlize of trip info
+    string str4(buffer, sizeof(buffer));
+    std::string tripParts;
+    boost::iostreams::basic_array_source<char> device(str4.c_str(), str4.size());
+    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s4(device);
+    boost::archive::binary_iarchive ia4(s4);
+    ia4 >> tripParts;///serialized object will be put in this pointer to driversTest
+    std::vector<std::string> vec4 = beginningInfoReader.split(tripParts);
+    int driverId = stoi(vec[0]);
+    int age = stoi(vec[1]);
+    char status = (vec[2])[0];
+    int experience = stoi(vec[3]);
+    int vehicleId = stoi(vec[4]);
+
+    std::cout << tripInfo->getRideId() << endl;
 
 
     return 0;

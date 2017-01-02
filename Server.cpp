@@ -39,7 +39,9 @@ BOOST_CLASS_EXPORT_GUID(Grid,"src/Grid")
 
 int main() {
 
-
+    Udp udp(1, 5555);///opening port
+    udp.initialize();///connecting to port
+    char buffer[1024];
     MainFlow mainFlow;
     std::string size;
     int numOfObstacles;
@@ -72,7 +74,7 @@ int main() {
     while (choice!=7){
         //if choice equals 6 then there is no string to be sent to it .
         if (choice == 6){
-           mainFlow.choiceMenu();
+           mainFlow.choiceMenu(choice);
         }
         if(choice == 1){
 
@@ -80,9 +82,9 @@ int main() {
             std::string a;
             std::cin >> a;
             std::cout << "Server Is Running" <<std::endl;
-            Udp udp(1, 5555);///opening port
-            udp.initialize();///connecting to port
-            char buffer[1024];
+//            Udp udp(1, 5555);///opening port
+//            udp.initialize();///connecting to port
+//            char buffer[1024];
             udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
             string str(buffer, sizeof(buffer));
             std::string driverInfo;
@@ -126,26 +128,52 @@ int main() {
             ///serialize and send taxi to client.
             std::string serial_str;
             boost::iostreams::back_insert_device<std::string> inserter(serial_str);
-            boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
-            boost::archive::binary_oarchive oa(s);
+            boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s5(inserter);
+            boost::archive::binary_oarchive oa(s5);
             oa << addChars;
-            s.flush();
+            s5.flush();
             udp.sendData(serial_str);
-
-
-
-
-
-
-
-
-
-
-
-
-
             //  cout << buffer << endl;
-            udp.reciveData(buffer, sizeof(buffer));
+            //udp.reciveData(buffer, sizeof(buffer));
+
+        }
+        if(choice == 9){
+            TripInformation* tripInformation = mainFlow.changeTime();
+            if(tripInformation != NULL){
+                mainFlow.getTaxiCenter()->assignDrivers();
+                std::string tripParts;
+                int tripId = tripInformation->getRideId();
+                int startX = tripInformation->getStart().getX();
+                int startY = tripInformation->getStart().getY();
+                int endX = tripInformation->getEnd().getX();
+                int endY = tripInformation->getEnd().getY();
+                int numOfPassengers = tripInformation->getNumberOfPassengers();
+                double tariff = tripInformation->getTariff();
+                int time = tripInformation->getStartTime();
+                tripParts += std::to_string(tripId);
+                tripParts += ',';
+                tripParts += std::to_string(startX);
+                tripParts += ',';
+                tripParts += std::to_string(startY);
+                tripParts += ',';
+                tripParts += std::to_string(endX);
+                tripParts += ',';
+                tripParts += std::to_string(endY);
+                tripParts += ',';
+                tripParts += std::to_string(numOfPassengers);
+                tripParts += ',';
+                tripParts += std::to_string(tariff);
+                tripParts += ',';
+                tripParts += std::to_string(time);
+
+                std::string serial_str3;
+                boost::iostreams::back_insert_device<std::string> inserter3(serial_str3);
+                boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s3(inserter3);
+                boost::archive::binary_oarchive oa(s3);
+                oa << tripParts;
+                s3.flush();
+                udp.sendData(serial_str3);
+            }
         }
         else{
             std::cin >> s;

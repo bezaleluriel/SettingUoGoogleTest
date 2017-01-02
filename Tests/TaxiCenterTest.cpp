@@ -38,7 +38,7 @@ TEST_F(TaxiCenterTest, addDriver){
 TEST_F(TaxiCenterTest, assignToClosestDriver){
     taxiCenter.addTaxiCab(1,1,'T','G');
     taxiCenter.addDriver(12345, 50,'D', 20, 1);
-    taxiCenter.addRide(1,0,0,2,2,1,25);
+    taxiCenter.addRide(1,0,0,2,2,1,25,0);
     taxiCenter.assignDrivers();
     EXPECT_TRUE(taxiCenter.getTripInfoList()->front()->getDriverId() == 12345);
 }

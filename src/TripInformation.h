@@ -39,6 +39,9 @@ private:
     Point end;
     bool rideIsOver; //will be set as false in constructor.
     bool hasDriver; // will be set as false in constructor.
+    int startTime;
+
+private:
 
     friend class boost::serialization::access;
     template <class Archive>
@@ -74,7 +77,8 @@ public:
      * @param driver is the driver of the taxi.
      * @param passenger is the passenger.
      */
-    TripInformation(int id, int startX, int startY, int endX, int endY, int numOfPassengers, double tarriff);
+    TripInformation(int id, int startX, int startY, int endX, int endY, int numOfPassengers,
+                    double tarriff,int time);
 
     /**
      * returns the ride id.
@@ -170,11 +174,32 @@ public:
      * sets the driver id as the id of the driver that will drive for this ride.
      * @param driverId is the id of the driver.
      */
+
     void setDriverId(int driverId);
 
+    /**
+     *
+     * @return
+     */
     bool getHasDriver();
 
+    /**
+     *
+     * @param b
+     */
     void setHasDriver(bool b);
+
+    /**
+     *
+     * @return
+     */
+    int getStartTime() ;
+
+    /**
+     *
+     * @param startTime
+     */
+    void setStartTime(int startTime);
 
 };
 

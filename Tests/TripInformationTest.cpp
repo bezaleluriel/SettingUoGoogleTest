@@ -24,7 +24,7 @@ protected:
         //Driver driver(12345, 50, MaritalStatus::Married, 20);
         Driver driver(12345, 50, Married, 5, 20);
         Passenger passenger(start, end);
-        tripInformation = TripInformation(rideId, start.getX(), start.getY(),end.getX(), end.getY(), numberOfPassengers, tariff);
+        tripInformation = TripInformation(rideId, start.getX(), start.getY(),end.getX(), end.getY(), numberOfPassengers, tariff,0);
         std::cout << "Set up" << std::endl;
     }
 

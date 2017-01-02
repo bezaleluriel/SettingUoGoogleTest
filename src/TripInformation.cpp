@@ -3,7 +3,7 @@
 TripInformation::TripInformation() {}
 
 TripInformation::TripInformation(int id, int startX, int startY, int endX, int endY, int numOfPassengers,
-                                 double cabTariff) {
+                                 double cabTariff, int time) {
     rideId = id;
     start = Point(startX, startY);
     end = Point(endX, endY);
@@ -83,4 +83,12 @@ bool TripInformation::getHasDriver() {
 
 void TripInformation::setHasDriver(bool b) {
     hasDriver = b;
+}
+
+int TripInformation::getStartTime()  {
+    return startTime;
+}
+
+void TripInformation::setStartTime(int startTime) {
+    TripInformation::startTime = startTime;
 }

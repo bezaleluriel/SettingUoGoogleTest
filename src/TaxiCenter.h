@@ -79,7 +79,7 @@ public:
      * @param numOfPassengers is the number of passengers for this ride.
      * @param tarriff is the tariff for this ride.
      */
-    void addRide(int id, int startX, int startY, int endX, int endY, int numOfPassengers, double tarriff);
+    void addRide(int id, int startX, int startY, int endX, int endY, int numOfPassengers, double tarriff, int time);
 
     /**
      * assigns drivers to the trip infos(from oldest ones to newest ones ) and puts the if ofthe driver
@@ -117,6 +117,10 @@ public:
      */
         void setTime(int time);
 
+    /**
+     *
+     */
+    TripInformation* checkTime();
 };
 
 

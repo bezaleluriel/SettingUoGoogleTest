@@ -45,7 +45,8 @@ void MainFlow::choiceMenu(int choice, std::string s) {
             int endY = stoi(vec[4]);
             int numOfPassengers = stoi(vec[5]);
             double tariff = stod(vec[6]);
-            taxiCenter.addRide(rideId, startX, startY, endX, endY, numOfPassengers, tariff);
+            int time = stoi(vec[7]);
+            taxiCenter.addRide(rideId, startX, startY, endX, endY, numOfPassengers, tariff, time);
             break;
         }
 
@@ -89,7 +90,7 @@ void MainFlow::choiceMenu(int choice, std::string s) {
         }
 }
 
-void MainFlow::choiceMenu() {
+void MainFlow::choiceMenu(int choice) {
     taxiCenter.completeTrip();
 }
 
@@ -101,6 +102,11 @@ void MainFlow::choiceMenu() {
 
  TaxiCenter* MainFlow::getTaxiCenter()  {
     return &taxiCenter;
+}
+
+TripInformation *MainFlow::changeTime() {
+    return taxiCenter.checkTime();
+
 }
 
 

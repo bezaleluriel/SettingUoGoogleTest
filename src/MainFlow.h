@@ -77,7 +77,7 @@ public:
      * because in option 6 it doesn't receive a string a input , only an int.
      * @param choice is the user's choice in this case it will be 6 for sure.
      */
-    void choiceMenu();
+    void choiceMenu(int choice);
 
     /**
      * this function is in function overloading there is another func with same name and different parameters.
@@ -90,12 +90,17 @@ public:
     void choiceMenu(int choice, std::string s);
 
     /**
-     * adds driver to taxi center.
-     * @param driver is the driver.
+     *
+     * @return
      */
-    void addDriver(Driver* driver);
-
     TaxiCenter* getTaxiCenter();
+
+    /**
+     *
+     * @return
+     */
+    //TODO - NEXT EXCERSICE WE WILL NEED TO RETURN A VECTOR AND LESARLEZ OTO.
+    TripInformation* changeTime();
 };
 
 

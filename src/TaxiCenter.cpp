@@ -54,8 +54,8 @@ void TaxiCenter::addTaxiCab(int cabId, int taxiType, char manufacturer, char col
     }
 }
 
-void TaxiCenter::addRide(int id, int startX, int startY, int endX, int endY, int numOfPassengers, double tariff){
-    TripInformation* tripInformation = new TripInformation(id,startX, startY, endX, endY, numOfPassengers, tariff);
+void TaxiCenter::addRide(int id, int startX, int startY, int endX, int endY, int numOfPassengers, double tariff, int time){
+    TripInformation* tripInformation = new TripInformation(id,startX, startY, endX, endY, numOfPassengers, tariff, time);
     tripInformationList.push_back(tripInformation);
 }
 
@@ -76,7 +76,7 @@ void TaxiCenter::assignDrivers() {
     std::list<TripInformation*>::iterator tripIt = tripInformationList.begin();
     while((driverIt != driversList.end()) && (tripIt != tripInformationList.end())){
         //setting the driver id of first trip to be the first driver.
-        if((*(driverIt))->getLocation()->getPoint().compare((*(tripIt))->getStart())){
+        if(((*(driverIt))->getLocation()->getPoint().compare((*(tripIt))->getStart())) &&((*(tripIt))->getStartTime() == time)){
             (*(tripIt))->setDriverId((*driverIt)->getId());
             //setting the driver of that trip as unavailable.
             (*(driverIt))->setAvailable(false);
@@ -142,4 +142,18 @@ int TaxiCenter::getTime()  {
 
 void TaxiCenter::setTime(int time) {
     TaxiCenter::time = time;
+}
+
+TripInformation* TaxiCenter::checkTime() {
+    time += 1;
+    std::list<TripInformation*>::iterator tripIt = tripInformationList.begin();
+    while(tripIt != tripInformationList.end()){
+        if ((*(tripIt))->getStartTime() == time){
+            return (*(tripIt));
+        }
+        else{
+            return NULL;
+        }
+    }
+
 }
