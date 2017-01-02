@@ -170,6 +170,9 @@ int main() {
                 tripParts += std::to_string(tariff);
                 tripParts += ',';
                 tripParts += std::to_string(time);
+                tripParts += ',';
+                tripParts += std::to_string(tripInformation->getDriverId());
+
 
                 ///sending trip info to client:
                 std::string serial_str3;

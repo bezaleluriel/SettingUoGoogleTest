@@ -111,6 +111,7 @@ int main(int argc, char *argv[]) {
     double tariff = stoi(vec4[6]);
     int time = stoi(vec4[7]);
     TripInformation* tripInfo = new TripInformation(rideId, startX, startY, endX, endY, numOfPassengers, tariff, time);
+    tripInfo->setDriverId(stoi(vec4[8]));
 
     ///testing for receiving of serialized trip info .
     std::cout << "this is a test for receiving info trip:";
