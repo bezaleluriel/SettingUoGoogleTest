@@ -72,30 +72,25 @@ int main() {
     std::cin >> choice;
     //we will now receive orders as an int continuously until we receive the number 7.
     while (choice!=7){
-        //if choice equals 6 then there is no string to be sent to it .
-        if (choice == 6){
-           mainFlow.choiceMenu(choice);
-        }
+        ///in case choice equals 1:
         if(choice == 1){
 
             ///receiving and desrializing driver.
             std::string a;
-            std::cin >> a;
+            std::cin >> a;///receiving number of drivers expected
             std::cout << "Server Is Running" <<std::endl;
-//            Udp udp(1, 5555);///opening port
-//            udp.initialize();///connecting to port
-//            char buffer[1024];
             udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
             string str(buffer, sizeof(buffer));
             std::string driverInfo;
             boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
             boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
             boost::archive::binary_iarchive ia(s2);
-            ia >> driverInfo;///serialized object will be put in this pointer to driversTest
+            ia >> driverInfo;
+            std::cout << "this is a test for receiving driver:";
             std::cout << driverInfo << endl;
             mainFlow.choiceMenu(5,driverInfo);
 
-            ///serialize and send to client the cab.
+            ///serialize and send the drivers cab to the client.
             BaseCab* cab= mainFlow.getTaxiCenter()->getDriverList()->front()->getTaxiCab();
             char b;
             char c;
@@ -125,7 +120,7 @@ int main() {
             addChars+=',';
             addChars+=c;
 
-            ///serialize and send taxi to client.
+            ///serialize and send taxi info string to client.
             std::string serial_str;
             boost::iostreams::back_insert_device<std::string> inserter(serial_str);
             boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s5(inserter);
@@ -133,10 +128,20 @@ int main() {
             oa << addChars;
             s5.flush();
             udp.sendData(serial_str);
-            //  cout << buffer << endl;
-            //udp.reciveData(buffer, sizeof(buffer));
-
         }
+
+        ///in case choice is a number from 2-5:
+        if((choice > 1) && (choice < 6)){
+            std::cin >> s;
+            mainFlow.choiceMenu(choice, s);
+        }
+
+        ///in case choice equals 6:
+        if (choice == 6){
+            mainFlow.choiceMenu(choice);
+        }
+
+        ///in case choice equals 9:
         if(choice == 9){
             TripInformation* tripInformation = mainFlow.changeTime();
             if(tripInformation != NULL){
@@ -166,6 +171,7 @@ int main() {
                 tripParts += ',';
                 tripParts += std::to_string(time);
 
+                ///sending trip info to client:
                 std::string serial_str3;
                 boost::iostreams::back_insert_device<std::string> inserter3(serial_str3);
                 boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s3(inserter3);
@@ -173,11 +179,8 @@ int main() {
                 oa << tripParts;
                 s3.flush();
                 udp.sendData(serial_str3);
+
             }
-        }
-        else{
-            std::cin >> s;
-            mainFlow.choiceMenu(choice, s);
         }
         std::cin >> choice;
     }

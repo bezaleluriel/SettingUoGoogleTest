@@ -11,6 +11,7 @@ TripInformation::TripInformation(int id, int startX, int startY, int endX, int e
     tariff = cabTariff;
     rideIsOver = false;
     hasDriver = false;
+    startTime = time;
 }
 
 int TripInformation::getRideId() {

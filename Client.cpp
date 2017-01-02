@@ -31,6 +31,7 @@ BOOST_CLASS_EXPORT_GUID(Grid,"src/Grid")
 
 int main(int argc, char *argv[]) {
     BeginningInfoReader beginningInfoReader;
+    ///receiving info for driver and creating one.
     std::string info;
     cin >> info;
     std::vector<std::string> vec = beginningInfoReader.split(info);
@@ -59,7 +60,6 @@ int main(int argc, char *argv[]) {
     udp.sendData(serial_str);
 
     ///receiving seriaized taxi cab.
-
     udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
     string str20(buffer, sizeof(buffer));
     std::string taxiInfo;///creating a pointer to driver test
@@ -85,28 +85,39 @@ int main(int argc, char *argv[]) {
         luxuryCab = new LuxuryCab(cabId, taxiType, manufacturer, color, map);
         luxuryCab->setLocation(map->getNode(Point(0,0)));
     }
-taxiInfo
-    ///test
-    std::cout << standardCab->getCabId() << std::endl;
+
+    ///test for receiving cab from server:
+    std::cout << "this is a test for receiving the serialized cab:";
+    std::cout << standardCab->getCabId() << "," ;
     std::cout << standardCab->getTaxiType() << std::endl;
+
+    ///receiving tripinfo from server:
     udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
-
-
-    /// desirlize of trip info
+    /// deserialize of trip info
     string str4(buffer, sizeof(buffer));
     std::string tripParts;
     boost::iostreams::basic_array_source<char> device(str4.c_str(), str4.size());
     boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s4(device);
     boost::archive::binary_iarchive ia4(s4);
-    ia4 >> tripParts;///serialized object will be put in this pointer to driversTest
+    ia4 >> tripParts;
+    ///spliting up trip info string and creating new trip info.
     std::vector<std::string> vec4 = beginningInfoReader.split(tripParts);
-    int driverId = stoi(vec[0]);
-    int age = stoi(vec[1]);
-    char status = (vec[2])[0];
-    int experience = stoi(vec[3]);
-    int vehicleId = stoi(vec[4]);
+    int rideId = stoi(vec4[0]);
+    int startX = stoi(vec4[1]);
+    char startY = (vec4[2])[0];
+    int endX = stoi(vec4[3]);
+    int endY = stoi(vec4[4]);
+    int numOfPassengers = stoi(vec4[5]);
+    double tariff = stoi(vec4[6]);
+    int time = stoi(vec4[7]);
+    TripInformation* tripInfo = new TripInformation(rideId, startX, startY, endX, endY, numOfPassengers, tariff, time);
 
-    std::cout << tripInfo->getRideId() << endl;
+    ///testing for receiving of serialized trip info .
+    std::cout << "this is a test for receiving info trip:";
+    std::cout << tripInfo->getDriverId() << endl;
+
+    ///connecting trip info with correct driver:
+
 
 
     return 0;
