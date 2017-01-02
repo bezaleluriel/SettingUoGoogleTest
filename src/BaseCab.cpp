@@ -78,3 +78,9 @@ Point BaseCab::returnLocationInPoint() {
     return getLocation()->getPoint();
 }
 
+int BaseCab::getTaxiType()  {
+    return taxiType;
+}
+
+
+

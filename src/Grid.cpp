@@ -84,4 +84,3 @@ void Grid::markObstacle(Point p) {
     nodesOnStructure[p.getX()][p.getY()].setObstacle(true);
 }
 
-BOOST_CLASS_EXPORT(Grid)

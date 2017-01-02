@@ -20,6 +20,7 @@ private:
     std::list <Driver*> driversList;
     std::list <BaseCab*> taxiCabsList;
     std::list <TripInformation*> tripInformationList;
+    int time;
 
 public:
     /**
@@ -33,7 +34,9 @@ public:
     ~TaxiCenter();
 
     /**
-     * constructor.
+     * constructor.    Structure* map = new Grid(11,11);
+    BaseCab* standardCab;
+    BaseCab* luxuryCab;
      * @param structure is the structure we will use as our map.
      */
     TaxiCenter(Structure* structure);
@@ -41,7 +44,7 @@ public:
     /**
      * adds a new driver to the taxi center list.
      */
-    void addDriver(int id, int age, MaritalStatus status, int experience, int vehicleId);
+    void addDriver(int id, int age, char status, int experience, int vehicleId);
 
     /**
      * creates a new taxi.
@@ -101,6 +104,18 @@ public:
      * @param id is the id of the driver who'slocation we want to print .
      */
     void printDriverLocation(int id);
+
+    /**
+     *
+     * @return
+     */
+    int getTime() ;
+
+    /**
+     *
+     * @param time
+     */
+        void setTime(int time);
 
 };
 

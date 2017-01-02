@@ -29,8 +29,6 @@
 #include <boost/serialization/base_object.hpp>
 
 class LuxuryCab:public BaseCab     {
-private:
-
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int version) {
@@ -54,6 +52,7 @@ public:
      * @param color is a char representing the color of the car(will be made into enum).
      */
     LuxuryCab(int cabId, int taxiType, char manufacturer, char color, Structure* map);
+
 
     /**
      * this function overrides the base class standardcab's function because it moves twice as fast then

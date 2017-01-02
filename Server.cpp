@@ -9,6 +9,7 @@
 #include "src/Driver.h"
 #include "src/StandardCab.h"
 #include "src/LuxuryCab.h"
+#include "src/Grid.h"
 #include <unistd.h>
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/base_object.hpp>
@@ -23,6 +24,7 @@
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/assume_abstract.hpp>
 #include <boost/serialization/export.hpp>
+#include <string>
 
 /**
  * main - this class gets input from user for size point start and end,
@@ -31,25 +33,11 @@
  * the b shortest way.
  * @return 0 in the end.
  */
-BOOST_CLASS_EXPORT_GUID(StandardCab, "StandardCab")
-BOOST_CLASS_EXPORT_GUID(LuxuryCab, "LuxuryCab")
+BOOST_CLASS_EXPORT_GUID(StandardCab, "src/StandardCab")
+BOOST_CLASS_EXPORT_GUID(LuxuryCab, "src/LuxuryCab")
+BOOST_CLASS_EXPORT_GUID(Grid,"src/Grid")
 
 int main() {
-//    std::cout << "Server Is Running" <<std::endl;
-//    Udp udp(1, 5555);///opening port
-//    udp.initialize();///connecting to port
-//    char buffer[1024];
-//    udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
-//    string str(buffer, sizeof(buffer));
-//    Driver *driver;///creating a pointer to driver test
-//    boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
-//    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
-//    boost::archive::binary_iarchive ia(s2);
-//    ia >> driver;///serialized object will be put in this pointer to driversTest
-//    std::cout << driver->getId() << endl;
-//
-//  //  cout << buffer << endl;
-//    udp.reciveData(buffer, sizeof(buffer));
 
 
     MainFlow mainFlow;
@@ -87,6 +75,8 @@ int main() {
            mainFlow.choiceMenu();
         }
         if(choice == 1){
+
+            ///receiving and desrializing driver.
             std::string a;
             std::cin >> a;
             std::cout << "Server Is Running" <<std::endl;
@@ -95,28 +85,63 @@ int main() {
             char buffer[1024];
             udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
             string str(buffer, sizeof(buffer));
-            Driver *driver;///creating a pointer to driver test
+            std::string driverInfo;
             boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
             boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
             boost::archive::binary_iarchive ia(s2);
-            ia >> driver;///serialized object will be put in this pointer to driversTest
-            std::cout << driver->getId() << endl;
+            ia >> driverInfo;///serialized object will be put in this pointer to driversTest
+            std::cout << driverInfo << endl;
+            mainFlow.choiceMenu(5,driverInfo);
 
-            //mainFlow.choiceMenu(3,"0,1,H,R");
-            mainFlow.addDriver(driver);
-            Structure* grid2 = new Grid();
-            BaseCab* taxi= new StandardCab(0,1,'H','R',grid2);
+            ///serialize and send to client the cab.
+            BaseCab* cab= mainFlow.getTaxiCenter()->getDriverList()->front()->getTaxiCab();
+            char b;
+            char c;
+            std::string g1;
+            std::string g2;
+            std::string addChars;
+            int cabId = cab->getCabId();
+            int taxiType = cab->getTaxiType();
+            Manufacturer manufacturer = cab->getManufacturer();
+            if(manufacturer == Manufacturer::Fiat){b = 'F';}
+            if(manufacturer == Manufacturer::Honda){b = 'H';}
+            if(manufacturer == Manufacturer::Subaro){b = 'S';}
+            if(manufacturer == Manufacturer::Tesla){b = 'T';}
+            Color color = cab->getColor();
+            if(color == Color::Blue){c = 'B';}
+            if(color == Color::Green){c = 'G';}
+            if(color == Color::Pink){c = 'P';}
+            if(color == Color::Red){c = 'R';}
+            if(color == Color::White){c = 'W';}
+            g1 = std::to_string(cabId);
+            g2 = std::to_string(taxiType);
+            addChars+=g1;
+            addChars+=',';
+            addChars+=g2;
+            addChars+=',';
+            addChars+=b;
+            addChars+=',';
+            addChars+=c;
 
-
-
+            ///serialize and send taxi to client.
             std::string serial_str;
             boost::iostreams::back_insert_device<std::string> inserter(serial_str);
             boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
             boost::archive::binary_oarchive oa(s);
-            oa << taxi;
+            oa << addChars;
             s.flush();
-            char buffer2[1024];
             udp.sendData(serial_str);
+
+
+
+
+
+
+
+
+
+
+
 
 
             //  cout << buffer << endl;

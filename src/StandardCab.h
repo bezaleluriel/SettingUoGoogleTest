@@ -37,7 +37,6 @@
  * in the mean time we have one derived class, luxury cab.
  */
 class StandardCab :public BaseCab {
-private:
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int version) {

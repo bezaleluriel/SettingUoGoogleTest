@@ -9,8 +9,21 @@
 #include "Color.h"
 #include "Grid.h"
 #include <string>
-#include <boost/serialization/base_object.hpp>
+#include <iostream>
 #include <boost/serialization/access.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/assign/list_of.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/iostreams/device/back_inserter.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/serialization/base_object.hpp>
 #include <boost/archive/tmpdir.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
@@ -21,18 +34,6 @@
 #include <boost/serialization/export.hpp>
 
 class BaseCab {
-
-protected:
-    int cabId;
-    int numOfKmPassed;
-    int velocity;
-    int taxiType;
-    double coEfficient;
-    Manufacturer manufacturer;
-    Color color;
-    GridNode* location;
-    Structure* map;
-
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int version) {
@@ -44,8 +45,24 @@ protected:
         ar & manufacturer;
         ar & color;
         ar & location;
+        ar.register_type(static_cast<Grid*>(NULL));
         ar & map;
     }
+
+protected:
+    int cabId;
+    int numOfKmPassed;
+    int velocity;
+    int taxiType;
+
+protected:
+    double coEfficient;
+    Manufacturer manufacturer;
+    Color color;
+    GridNode* location;
+
+
+    Structure* map;
 
 public:
 
@@ -62,6 +79,7 @@ public:
      * @param color is a char representing the color of the car(will be made into enum).
      */
     BaseCab(int cabId, int taxiType, char manufacturer, char color,Structure* map);
+
 
     /**
      * returs the BaseCab's id.
@@ -128,6 +146,8 @@ public:
      * and we want its function to be the one to work when the function is called.
      */
     virtual void move( Point point )=0;
+
+    int getTaxiType() ;
 
 };
 

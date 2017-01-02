@@ -33,24 +33,6 @@ void MainFlow::choiceMenu(int choice, std::string s) {
     //splits the input received by user to parts and returns in a vector.
     std::vector<std::string> vec = beginningInfoReader.split(s);
     switch (choice) {
-        /*
-         * case 1 is to insert a driver.
-         */
-//        case 1 : {
-//
-//
-//
-//
-//
-//            int driverId = stoi(vec[0]);
-//            int age = stoi(vec[1]);
-//            char status = (vec[2])[0];
-//            int experience = stoi(vec[3]);
-//            int vehicleId = stoi(vec[4]);
-//            taxiCenter.addDriver(driverId, age, status, experience, vehicleId);
-//            break;
-//        }
-
 
             /*
              *case 2 is to insert a new ride.
@@ -88,6 +70,18 @@ void MainFlow::choiceMenu(int choice, std::string s) {
             taxiCenter.printDriverLocation(searchId);
             break;
                 }
+            /*
+     * case 5 is to insert a driver.
+     */
+        case 5 : {
+            int driverId = stoi(vec[0]);
+            int age = stoi(vec[1]);
+            char status = (vec[2])[0];
+            int experience = stoi(vec[3]);
+            int vehicleId = stoi(vec[4]);
+            taxiCenter.addDriver(driverId, age, status, experience, vehicleId);
+            break;
+        }
 
         default :
             break;
@@ -99,11 +93,11 @@ void MainFlow::choiceMenu() {
     taxiCenter.completeTrip();
 }
 
-void MainFlow::addDriver(Driver *driver) {
-    taxiCenter.addDriver(driver->getId(), driver->getAge(), driver->getMaritalStatus(),
-                         driver->getYearsOfExperience(), driver->getVehicleId());
-
-}
+//void MainFlow::addDriver(Driver *driver) {
+//    taxiCenter.addDriver(driver->getId(), driver->getAge(), driver->getMaritalStatus(),
+//                         driver->getYearsOfExperience(), driver->getVehicleId());
+//
+//}
 
  TaxiCenter* MainFlow::getTaxiCenter()  {
     return &taxiCenter;
