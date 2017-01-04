@@ -121,6 +121,7 @@ public:
      *
      */
     TripInformation* checkTime();
+
 };
 
 

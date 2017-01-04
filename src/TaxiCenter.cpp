@@ -100,27 +100,38 @@ void TaxiCenter::getTo() {
     //going through drivers list telling the unavailable ones to get to end point of their trip info.
     while(driverIt != driversList.end()){
         if(!((*(driverIt))->getAvailable())){
-            //(*(driverIt))->getTaxiCab()->move((*(driverIt))->getTripInformation()->getEnd());
+            (*(driverIt))->getTaxiCab()->move();
         }
         driverIt++;
     }
 }
 
 void TaxiCenter::completeTrip() {
-    assignDrivers();
-    getTo();
+    //assignDrivers();
+    //getTo();
     //marking all drivers as available again after finishing their rides.
     std::list<Driver*>::iterator driverIt = driversList.begin();
-    while(driverIt != driversList.end()){
-        (*(driverIt))->setAvailable(true);
-        driverIt++;
+    std::list<TripInformation*>::iterator tripInfoIt = tripInformationList.begin();
+
+    while(driverIt != driversList.end()) {
+        if (!((*(driverIt))->getAvailable()) &&
+            ((*(driverIt))->getTripInformation()->getEnd().compare((*(driverIt))->getLocation()->getPoint()))) {
+
+            (*(driverIt))->setAvailable(true);
+            driverIt++;
+        }
+        else{
+            driverIt++;
+        }
     }
-    //deleting all info trips that are over.
-    std::list<TripInformation*>::iterator tripIt = tripInformationList.begin();
-    while(tripInformationList.size()>0){
-        if(tripInformationList.front()->getHasDriver()){
+
+    while(tripInfoIt != tripInformationList.end()){
+        if((tripInformationList.front()->getHasDriver()) && ((tripInformationList.front()->getRideIsOver()))){
             delete[] tripInformationList.front();
             tripInformationList.pop_front();
+        }
+        else{
+            tripInfoIt++;
         }
     }
 }
@@ -166,7 +177,7 @@ TripInformation* TaxiCenter::checkTime() {
         if ((*(tripIt))->getStartTime() == time){
             return (*(tripIt));
         }
-        if ((*(tripIt))->getStartTime() == time -1){
+        if (((*(tripIt))->getStartTime() < time) && ((*(tripIt))->getHasDriver()) && !((*(tripIt))->getRideIsOver())){
             return (*(tripIt));
         }
         else{
@@ -174,3 +185,5 @@ TripInformation* TaxiCenter::checkTime() {
         }
     }
 }
+
+

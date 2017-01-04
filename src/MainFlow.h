@@ -101,6 +101,7 @@ public:
      */
     //TODO - NEXT EXCERSICE WE WILL NEED TO RETURN A VECTOR AND LESARLEZ OTO.
     TripInformation* changeTime();
+
 };
 
 

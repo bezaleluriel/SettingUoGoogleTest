@@ -173,23 +173,22 @@ int main() {
 
         ///in case choice equals 9:
         if(choice == 9){
-            while(choice == 9){
                 /**
- * TODO - every time the command 9 is given we will srialize and send
- * 3 vectors to the other side.
- * first one - with all of the trip infos we need to attach to drivers.
- * second one -  id's of all drivers that need to move.
- * third one - destination points accordingley.
- * we are now sending a flag 1 if we need to attach a trip info to a driver.
- * 2- if we want to give the 'go' order.
- * next time we won't need this because client will know which vector has
- * drivers that need to move or to attach trip info.
- */
+             * TODO - every time the command 9 is given we will srialize and send
+             * 3 vectors to the other side.
+             * first one - with all of the trip infos we need to attach to drivers.
+             * second one -  id's of all drivers that need to move.
+             * third one - destination points accordingley.
+             * we are now sending a flag 1 if we need to attach a trip info to a driver.
+             * 2- if we want to give the 'go' order.
+             * next time we won't need this because client will know which vector has
+             * drivers that need to move or to attach trip info.
+             */
                 TripInformation* tripInformation = mainFlow.changeTime();
                 std::cout << "choice9 the time now is: " << mainFlow.getTaxiCenter()->getTime();
                 Point currLocation = mainFlow.getTaxiCenter()->getDriverList()->front()->getLocation()->getPoint();
                 std::cout << " and the location now is: " << currLocation << std::endl;
-                if(tripInformation != NULL  ){
+                if((tripInformation != NULL  )){
 
                     ///in case we need to attach trip info to driver. represented by flag '1'.
                     if(tripInformation->getStartTime() == mainFlow.getTaxiCenter()->getTime()){
@@ -243,7 +242,11 @@ int main() {
                         //TODO make a func in taxi center that finds a driver by id and tell him and his cab to move.
                         Point p = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
                         std::cout << "before move" << p << std::endl;
-                        mainFlow.getTaxiCenter()->getTaxiList()->front()->move();
+
+                        mainFlow.getTaxiCenter()->getTo();
+                        mainFlow.getTaxiCenter()->completeTrip();
+
+
                         Point p2 = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
                         std::cout << "after move" << p2 << std::endl;
 
@@ -260,18 +263,6 @@ int main() {
                         tripParts2.clear();
                     }
                 }
-
-
-
-
-
-
-
-
-
-
-            }
-
         }
         std::cin >> choice;
     }
