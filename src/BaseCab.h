@@ -8,6 +8,7 @@
 #include "Manufacturer.h"
 #include "Color.h"
 #include "Grid.h"
+#include "Gps.h"
 #include <string>
 #include <iostream>
 #include <boost/serialization/access.hpp>
@@ -54,15 +55,13 @@ protected:
     int numOfKmPassed;
     int velocity;
     int taxiType;
-
-protected:
     double coEfficient;
     Manufacturer manufacturer;
     Color color;
     GridNode* location;
-
-
     Structure* map;
+    Gps gps;
+    std::stack<Point> route;
 
 public:
 
@@ -145,9 +144,15 @@ public:
      * this function will be virtual because the deriven class called luxuryBaseCab will be faster
      * and we want its function to be the one to work when the function is called.
      */
-    virtual void move( Point point )=0;
+    virtual void move()=0;
 
+    /**
+     *
+     * @return
+     */
     int getTaxiType() ;
+
+    void navigate (Point dst);
 
 };
 

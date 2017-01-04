@@ -84,6 +84,8 @@ void TaxiCenter::assignDrivers() {
             (*(driverIt))->setTripInformation((*(tripIt)));
             //setting the has driver field in trip info as true.
             (*(tripIt))->setHasDriver(true);
+            //telling driver to calculate route to dst point.
+            (*(driverIt))->getTaxiCab()->navigate((*(tripIt))->getEnd());
             driverIt++;
             tripIt++;
         }
@@ -98,7 +100,7 @@ void TaxiCenter::getTo() {
     //going through drivers list telling the unavailable ones to get to end point of their trip info.
     while(driverIt != driversList.end()){
         if(!((*(driverIt))->getAvailable())){
-            (*(driverIt))->getTaxiCab()->move((*(driverIt))->getTripInformation()->getEnd());
+            //(*(driverIt))->getTaxiCab()->move((*(driverIt))->getTripInformation()->getEnd());
         }
         driverIt++;
     }
@@ -144,6 +146,19 @@ void TaxiCenter::setTime(int time) {
     TaxiCenter::time = time;
 }
 
+
+/**
+ * TODO next time we will need to create a vector that contains 2 vectors.
+ * the first vector wil contain the trip info that their time is == time.
+ * the use of this vector is to have a loop that will serialize and send to client all
+ * of the trip infos.
+ * the second vector wil contain the trip info that their time is == time -1.
+ * we will use this vector in server - we will serialize and send to client 2 different vectors.
+ * first vector - id's of all of drivers that need to move.
+ * second vector - destination points for current movement accordingly.
+*/
+
+
 TripInformation* TaxiCenter::checkTime() {
     time += 1;
     std::list<TripInformation*>::iterator tripIt = tripInformationList.begin();
@@ -151,9 +166,11 @@ TripInformation* TaxiCenter::checkTime() {
         if ((*(tripIt))->getStartTime() == time){
             return (*(tripIt));
         }
+        if ((*(tripIt))->getStartTime() == time -1){
+            return (*(tripIt));
+        }
         else{
             return NULL;
         }
     }
-
 }

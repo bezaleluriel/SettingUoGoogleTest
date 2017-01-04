@@ -12,8 +12,18 @@ LuxuryCab::LuxuryCab(int cabId, int taxiType, char manufacturer, char color, Str
     coEfficient = 2;
 }
 
-void LuxuryCab::move(Point p) {
-    location = map->getNode(p);
+void LuxuryCab::move() {
+    ///jump 2 points.
+    if(route.size()>1){
+        route.pop();
+        setLocation(map->getNode(route.top()));
+        route.pop();
+    }
+    ///if there is only one point left to dst, jump one point.
+    if(route.size() == 1){
+        setLocation(map->getNode(route.top()));
+        route.pop();
+    }
 }
 
 

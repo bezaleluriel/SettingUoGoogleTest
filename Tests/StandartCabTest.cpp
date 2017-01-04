@@ -32,6 +32,6 @@ public:
  * anyway we add it with comment to prevent problems.
 **/
 TEST_F(StandardCabTest, moveTest){
-    standardCab.move(Point(9,9));
+    standardCab.move();
     EXPECT_FALSE(gridNode->getPoint().compare(standardCab.getLocation()->getPoint()));
 }

@@ -10,8 +10,11 @@ StandardCab::StandardCab(int cabId, int taxiType, char manufacturer, char color,
     coEfficient = 1;
 }
 
-void StandardCab::move(Point p) {
-    location = map->getNode(p);
+void StandardCab::move() {
+    if(route.size()>0){
+        setLocation(map->getNode(route.top()));
+        route.pop();
+    }
 }
 
 

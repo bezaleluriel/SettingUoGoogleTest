@@ -23,9 +23,13 @@ std::stack<Point> Gps::findeShortersRoute(Point start, Point end) {
     bfs.setEnd(end);
     std::vector<Point> vec;
     vec = bfs.run();
+    //todo this line get the hell the 0,0 point
+    vec.erase(vec.begin());
     while(vec.size()) {
     gpsStack.push(vec.back());
     vec.pop_back();
+      //  gpsStack.push(vec.front());
+      //  vec.erase(vec.begin());
     }
     return gpsStack;
 }

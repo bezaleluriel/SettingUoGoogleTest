@@ -59,7 +59,7 @@ public:
      * the standard cab.(moves 2 blocks with every movement), unless there is one block left to destination and then
      * it will move only one.
      */
-    void move(Point p);
+    void move();
 
 };
 

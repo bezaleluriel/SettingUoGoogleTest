@@ -59,7 +59,7 @@ public:
      */
     StandardCab(int cabId, int taxiType, char manufacturer, char color, Structure* map);
 
-    void move(Point p);
+    void move();
 };
 
 

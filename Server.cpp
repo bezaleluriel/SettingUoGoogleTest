@@ -43,6 +43,7 @@ int main() {
     udp.initialize();///connecting to port
     char buffer[1024];
     MainFlow mainFlow;
+    std::vector<std::string> addObstacles;
     std::string size;
     int numOfObstacles;
     std::string obstacleLocation;
@@ -65,6 +66,7 @@ int main() {
         for(int i=0; i<numOfObstacles; i++){
             std:: cin >> obstacleLocation;
             mainFlow.setObstacle(obstacleLocation);
+            addObstacles.push_back(obstacleLocation);
         }
     }
 
@@ -74,6 +76,7 @@ int main() {
     while (choice!=7){
         ///in case choice equals 1:
         if(choice == 1){
+            std::cout << "choice1" << std::endl;
 
             ///receiving and desrializing driver.
             std::string a;
@@ -86,9 +89,31 @@ int main() {
             boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
             boost::archive::binary_iarchive ia(s2);
             ia >> driverInfo;
-            std::cout << "this is a test for receiving driver:";
-            std::cout << driverInfo << endl;
+            std::cout << "this is a test for receiving driver:"<< std::endl;
+            std::cout << driverInfo << std::endl;
             mainFlow.choiceMenu(5,driverInfo);
+
+
+            /*
+             * TODO I ADDED THIS LINE
+             */
+            mainFlow.parseSize(size);
+
+            ///serializing and sending grid size, and obstacles location.
+            std::string mapInfo;
+            mapInfo += size;
+            while(!(addObstacles.empty())){
+                mapInfo += ',';
+                mapInfo += addObstacles.back();
+                addObstacles.pop_back();
+            }
+            std::string serial_str6;
+            boost::iostreams::back_insert_device<std::string> inserter6(serial_str6);
+            boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s6(inserter6);
+            boost::archive::binary_oarchive oa6(s6);
+            oa6 << mapInfo;
+            s6.flush();
+            udp.sendData(serial_str6);
 
             ///serialize and send the drivers cab to the client.
             BaseCab* cab= mainFlow.getTaxiCenter()->getDriverList()->front()->getTaxiCab();
@@ -130,6 +155,11 @@ int main() {
             udp.sendData(serial_str);
         }
 
+        //todo i added this
+        if (choice == 7){
+            exit(0);
+        }
+
         ///in case choice is a number from 2-5:
         if((choice > 1) && (choice < 6)){
             std::cin >> s;
@@ -143,47 +173,105 @@ int main() {
 
         ///in case choice equals 9:
         if(choice == 9){
-            TripInformation* tripInformation = mainFlow.changeTime();
-            if(tripInformation != NULL){
-                mainFlow.getTaxiCenter()->assignDrivers();
-                std::string tripParts;
-                int tripId = tripInformation->getRideId();
-                int startX = tripInformation->getStart().getX();
-                int startY = tripInformation->getStart().getY();
-                int endX = tripInformation->getEnd().getX();
-                int endY = tripInformation->getEnd().getY();
-                int numOfPassengers = tripInformation->getNumberOfPassengers();
-                double tariff = tripInformation->getTariff();
-                int time = tripInformation->getStartTime();
-                tripParts += std::to_string(tripId);
-                tripParts += ',';
-                tripParts += std::to_string(startX);
-                tripParts += ',';
-                tripParts += std::to_string(startY);
-                tripParts += ',';
-                tripParts += std::to_string(endX);
-                tripParts += ',';
-                tripParts += std::to_string(endY);
-                tripParts += ',';
-                tripParts += std::to_string(numOfPassengers);
-                tripParts += ',';
-                tripParts += std::to_string(tariff);
-                tripParts += ',';
-                tripParts += std::to_string(time);
-                tripParts += ',';
-                tripParts += std::to_string(tripInformation->getDriverId());
+            while(choice == 9){
+                /**
+ * TODO - every time the command 9 is given we will srialize and send
+ * 3 vectors to the other side.
+ * first one - with all of the trip infos we need to attach to drivers.
+ * second one -  id's of all drivers that need to move.
+ * third one - destination points accordingley.
+ * we are now sending a flag 1 if we need to attach a trip info to a driver.
+ * 2- if we want to give the 'go' order.
+ * next time we won't need this because client will know which vector has
+ * drivers that need to move or to attach trip info.
+ */
+                TripInformation* tripInformation = mainFlow.changeTime();
+                std::cout << "choice9 the time now is: " << mainFlow.getTaxiCenter()->getTime();
+                Point currLocation = mainFlow.getTaxiCenter()->getDriverList()->front()->getLocation()->getPoint();
+                std::cout << " and the location now is: " << currLocation << std::endl;
+                if(tripInformation != NULL  ){
+
+                    ///in case we need to attach trip info to driver. represented by flag '1'.
+                    if(tripInformation->getStartTime() == mainFlow.getTaxiCenter()->getTime()){
+                        std::cout << "flag1" << std::endl;
+                        mainFlow.getTaxiCenter()->assignDrivers();
+                        std::string tripParts;
+                        int tripId = tripInformation->getRideId();
+                        int startX = tripInformation->getStart().getX();
+                        int startY = tripInformation->getStart().getY();
+                        int endX = tripInformation->getEnd().getX();
+                        int endY = tripInformation->getEnd().getY();
+                        int numOfPassengers = tripInformation->getNumberOfPassengers();
+                        double tariff = tripInformation->getTariff();
+                        int time = tripInformation->getStartTime();
+                        tripParts += '1';
+                        tripParts += ',';
+                        tripParts += std::to_string(tripId);
+                        tripParts += ',';
+                        tripParts += std::to_string(startX);
+                        tripParts += ',';
+                        tripParts += std::to_string(startY);
+                        tripParts += ',';
+                        tripParts += std::to_string(endX);
+                        tripParts += ',';
+                        tripParts += std::to_string(endY);
+                        tripParts += ',';
+                        tripParts += std::to_string(numOfPassengers);
+                        tripParts += ',';
+                        tripParts += std::to_string(tariff);
+                        tripParts += ',';
+                        tripParts += std::to_string(time);
+                        tripParts += ',';
+                        tripParts += std::to_string(tripInformation->getDriverId());
 
 
-                ///sending trip info to client:
-                std::string serial_str3;
-                boost::iostreams::back_insert_device<std::string> inserter3(serial_str3);
-                boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s3(inserter3);
-                boost::archive::binary_oarchive oa(s3);
-                oa << tripParts;
-                s3.flush();
-                udp.sendData(serial_str3);
+                        ///sending trip info to client:
+                        std::string serial_str3;
+                        boost::iostreams::back_insert_device<std::string> inserter3(serial_str3);
+                        boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s3(inserter3);
+                        boost::archive::binary_oarchive oa(s3);
+                        oa << tripParts;
+                        s3.flush();
+                        udp.sendData(serial_str3);
+                        tripParts.clear();
+                    }
+
+                    ///in case we give 'go' order. represented by flag '2'.
+                    //if(tripInformation->getStartTime() == mainFlow.getTaxiCenter()->getTime() - 1){
+                    if(tripInformation->getStartTime() < mainFlow.getTaxiCenter()->getTime()){
+                        std::cout << "flag2" << std::endl;
+                        //TODO make a func in taxi center that finds a driver by id and tell him and his cab to move.
+                        Point p = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
+                        std::cout << "before move" << p << std::endl;
+                        mainFlow.getTaxiCenter()->getTaxiList()->front()->move();
+                        Point p2 = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
+                        std::cout << "after move" << p2 << std::endl;
+
+                        std::string tripParts2;
+                        tripParts2 += '2';///flag
+                        tripParts2 += tripInformation->getDriverId();
+                        std::string serial_str8;
+                        boost::iostreams::back_insert_device<std::string> inserter8(serial_str8);
+                        boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s8(inserter8);
+                        boost::archive::binary_oarchive oa8(s8);
+                        oa8 << tripParts2;
+                        s8.flush();
+                        udp.sendData(serial_str8);
+                        tripParts2.clear();
+                    }
+                }
+
+
+
+
+
+
+
+
+
 
             }
+
         }
         std::cin >> choice;
     }

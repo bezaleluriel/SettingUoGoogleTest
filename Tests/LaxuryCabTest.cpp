@@ -34,6 +34,6 @@ public:
  * anyway we add it with comment to prevent problems.
 **/
 TEST_F(LaxuryCabTest, moveTest){
-    luxuryCab.move(Point(9,9));
+    luxuryCab.move();
     EXPECT_FALSE(gridNode->getPoint().compare(luxuryCab.getLocation()->getPoint()));
 }
