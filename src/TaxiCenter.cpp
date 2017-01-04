@@ -116,7 +116,7 @@ void TaxiCenter::completeTrip() {
     while(driverIt != driversList.end()) {
         if (!((*(driverIt))->getAvailable()) &&
             ((*(driverIt))->getTripInformation()->getEnd().compare((*(driverIt))->getLocation()->getPoint()))) {
-
+            (*(driverIt))->getTripInformation()->setRideIsOver(true);
             (*(driverIt))->setAvailable(true);
             driverIt++;
         }
@@ -125,15 +125,29 @@ void TaxiCenter::completeTrip() {
         }
     }
 
-    while(tripInfoIt != tripInformationList.end()){
+
+    //todo
+    TripInformation* t = tripInformationList.front();
+    while(tripInformationList.size()>0){
         if((tripInformationList.front()->getHasDriver()) && ((tripInformationList.front()->getRideIsOver()))){
             delete[] tripInformationList.front();
             tripInformationList.pop_front();
         }
         else{
-            tripInfoIt++;
+            break;
         }
     }
+
+
+//    while(tripInfoIt != tripInformationList.end()){
+//        if((tripInformationList.front()->getHasDriver()) && ((tripInformationList.front()->getRideIsOver()))){
+//            delete[] tripInformationList.front();
+//            tripInformationList.pop_front();
+//        }
+//        else{
+//            tripInfoIt++;
+//        }
+//    }
 }
 void TaxiCenter::printDriverLocation(int id) {
     std::list<Driver*>::iterator driverIt = driversList.begin();

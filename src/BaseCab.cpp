@@ -13,7 +13,6 @@ BaseCab::BaseCab(int cabId, int taxiType, char manufacturer, char color, Structu
     BaseCab::cabId = cabId;
     BaseCab::taxiType = taxiType;
     BaseCab::map = map;
-    gps = Gps(map);
     switch (manufacturer) {
         case 'H' :
             BaseCab::manufacturer = Manufacturer::Honda;
@@ -84,6 +83,7 @@ int BaseCab::getTaxiType()  {
 }
 
 void BaseCab::navigate(Point end) {
+    Gps gps = Gps(map);
     route = gps.findeShortersRoute(getLocation()->getPoint(),end);
 }
 

@@ -78,6 +78,7 @@ int main() {
         if(choice == 1){
             std::cout << "choice1" << std::endl;
 
+            //TODO - next time we will need to receive more then 1 driver (loop)
             ///receiving and desrializing driver.
             std::string a;
             std::cin >> a;///receiving number of drivers expected
@@ -115,7 +116,9 @@ int main() {
             s6.flush();
             udp.sendData(serial_str6);
 
+            //TODO - next time we will need to send more then 1 taxi (loop)
             ///serialize and send the drivers cab to the client.
+            ///for next time - BaseCab* cab= driver->get taxi
             BaseCab* cab= mainFlow.getTaxiCenter()->getDriverList()->front()->getTaxiCab();
             char b;
             char c;
@@ -155,10 +158,6 @@ int main() {
             udp.sendData(serial_str);
         }
 
-        //todo i added this
-        if (choice == 7){
-            exit(0);
-        }
 
         ///in case choice is a number from 2-5:
         if((choice > 1) && (choice < 6)){
@@ -166,10 +165,10 @@ int main() {
             mainFlow.choiceMenu(choice, s);
         }
 
-        ///in case choice equals 6:
-        if (choice == 6){
-            mainFlow.choiceMenu(choice);
-        }
+//        ///in case choice equals 6:
+//        if (choice == 6){
+//            mainFlow.choiceMenu(choice);
+//        }
 
         ///in case choice equals 9:
         if(choice == 9){
@@ -190,10 +189,10 @@ int main() {
                 std::cout << " and the location now is: " << currLocation << std::endl;
                 if((tripInformation != NULL  )){
 
+                    mainFlow.getTaxiCenter()->assignDrivers();
                     ///in case we need to attach trip info to driver. represented by flag '1'.
                     if(tripInformation->getStartTime() == mainFlow.getTaxiCenter()->getTime()){
                         std::cout << "flag1" << std::endl;
-                        mainFlow.getTaxiCenter()->assignDrivers();
                         std::string tripParts;
                         int tripId = tripInformation->getRideId();
                         int startX = tripInformation->getStart().getX();
@@ -244,6 +243,7 @@ int main() {
                         std::cout << "before move" << p << std::endl;
 
                         mainFlow.getTaxiCenter()->getTo();
+                        Driver* uriel = mainFlow.getTaxiCenter()->getDriverList()->front();
                         mainFlow.getTaxiCenter()->completeTrip();
 
 
@@ -267,5 +267,6 @@ int main() {
         std::cin >> choice;
     }
     //in case the choice number is 7 we exit the program.
-    return 0;
+   // return 0;
+   exit(0);
 }

@@ -60,7 +60,6 @@ protected:
     Color color;
     GridNode* location;
     Structure* map;
-    Gps gps;
     std::stack<Point> route;
 
 public:

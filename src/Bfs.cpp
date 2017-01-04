@@ -95,6 +95,7 @@ std::vector<Point> Bfs::run() {
      */
     while(node->getFather()){
         pointStack.push(node->getPoint());
+        //node.se
         node = node->getFather();
     }
     pointStack.push(node->getPoint());
