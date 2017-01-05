@@ -121,7 +121,7 @@ public:
     /**
      * setWasItVisited - sets the wasItVisited boolean to true to show it was visited.
      */
-    void setWasItVisited();
+    void setWasItVisited(bool b);
 
     /**
      * sets the father pointer with an address of the father's node.

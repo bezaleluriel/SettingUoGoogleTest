@@ -64,7 +64,7 @@ void Grid::createNodes() {
  * @param p is the point contained in the node we will want to flag.
  */
 void Grid::flagNode(Point p) {
-    nodesOnStructure[p.getX()][p.getY()].setWasItVisited();
+    nodesOnStructure[p.getX()][p.getY()].setWasItVisited(true);
 }
 
 /**

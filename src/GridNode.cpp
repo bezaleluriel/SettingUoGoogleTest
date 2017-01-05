@@ -87,8 +87,8 @@ GridNode* GridNode::getLowerNeighbor(){
 /**
  * setWasItVisited - sets the wasItVisited boolean to true to show it was visited.
  */
-void GridNode::setWasItVisited(){
-    visited = true;
+void GridNode::setWasItVisited(bool b){
+    visited = b;
 }
 
 /**

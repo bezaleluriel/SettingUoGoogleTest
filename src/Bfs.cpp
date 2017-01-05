@@ -73,13 +73,23 @@ std::vector<Point> Bfs::run() {
     std::queue <GridNode*> bfsQueue;
     std::stack <Point> pointStack;
 
+
+
+    for (int i = 0; i< 11 ; i++){
+        for (int j = 0; j <11 ; ++j) {
+            structure->getNode(Point(i, j))->setWasItVisited(false);
+            structure->getNode(Point(i, j))->setFather(NULL);
+        }
+    }
+
+
     //in case the start point is the end point is the same one.
     if(start.compare(end)){
         pointStack.push(start);
     }
     //root is put in the que and marked as visited.
     bfsQueue.push(root);
-    root->setWasItVisited();
+    root->setWasItVisited(true);
     //as long as the root is not the end point - keep setting neighbors for each root and changing roots.
     while(!(root->getPoint().compare(end))){
         setNeighbors(root,bfsQueue);
@@ -95,7 +105,7 @@ std::vector<Point> Bfs::run() {
      */
     while(node->getFather()){
         pointStack.push(node->getPoint());
-        //node.se
+        //node->setWasItVisited(false);
         node = node->getFather();
     }
     pointStack.push(node->getPoint());
@@ -119,25 +129,25 @@ void Bfs::setNeighbors(GridNode* newRoot , std::queue <GridNode*> &queueBfs){
     if ((newRoot->getLeftNeighbor()) && !(newRoot->getLeftNeighbor()->wasItVisited())
         && !(newRoot->getLeftNeighbor()->isObstacle())){
         queueBfs.push(newRoot->getLeftNeighbor());
-        newRoot->getLeftNeighbor()->setWasItVisited();
+        newRoot->getLeftNeighbor()->setWasItVisited(true);
         newRoot->getLeftNeighbor()->setFather(queueBfs.front());
     }
     if ((newRoot->getUpperNeighbor()) && !(newRoot->getUpperNeighbor()->wasItVisited())
         && !(newRoot->getUpperNeighbor()->isObstacle())){
         queueBfs.push(newRoot->getUpperNeighbor());
-        newRoot->getUpperNeighbor()->setWasItVisited();
+        newRoot->getUpperNeighbor()->setWasItVisited(true);
         newRoot->getUpperNeighbor()->setFather(queueBfs.front());
     }
     if ((newRoot->getRightNeighbor()) && !(newRoot->getRightNeighbor()->wasItVisited())
         && !(newRoot->getRightNeighbor()->isObstacle())){
         queueBfs.push(newRoot->getRightNeighbor());
-        newRoot->getRightNeighbor()->setWasItVisited();
+        newRoot->getRightNeighbor()->setWasItVisited(true);
         newRoot->getRightNeighbor()->setFather(queueBfs.front());
     }
     if ((newRoot->getLowerNeighbor()) && !(newRoot->getLowerNeighbor()->wasItVisited())
         && !(newRoot->getLowerNeighbor()->isObstacle())){
         queueBfs.push(newRoot->getLowerNeighbor());
-        newRoot->getLowerNeighbor()->setWasItVisited();
+        newRoot->getLowerNeighbor()->setWasItVisited(true);
         newRoot->getLowerNeighbor()->setFather(queueBfs.front());
     }
 }

@@ -117,7 +117,7 @@ TEST_F(GridNodeTest, GridNodeCheckLowerNeighborIsExist_Test){
  */
 TEST_F(GridNodeTest, CheckSetWasVisited){
     std::cout << "CheckSetWasVisited" << std::endl;
-    gridNode1->setWasItVisited();
+    gridNode1->setWasItVisited(true);
     EXPECT_TRUE(gridNode1->wasItVisited());
 }
 /**
