@@ -73,9 +73,7 @@ std::vector<Point> Bfs::run() {
     std::queue <GridNode*> bfsQueue;
     std::stack <Point> pointStack;
 
-
-
-    for (int i = 0; i< 11 ; i++){
+    for (int i = 0; i< 11 ; ++i){
         for (int j = 0; j <11 ; ++j) {
             structure->getNode(Point(i, j))->setWasItVisited(false);
             structure->getNode(Point(i, j))->setFather(NULL);
