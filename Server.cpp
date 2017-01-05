@@ -94,12 +94,6 @@ int main() {
             std::cout << driverInfo << std::endl;
             mainFlow.choiceMenu(5,driverInfo);
 
-
-            /*
-             * TODO I ADDED THIS LINE
-             */
-            mainFlow.parseSize(size);
-
             ///serializing and sending grid size, and obstacles location.
             std::string mapInfo;
             mapInfo += size;
@@ -188,7 +182,6 @@ int main() {
                 Point currLocation = mainFlow.getTaxiCenter()->getDriverList()->front()->getLocation()->getPoint();
                 std::cout << " and the location now is: " << currLocation << std::endl;
                 if((tripInformation != NULL  )){
-
                     mainFlow.getTaxiCenter()->assignDrivers();
                     ///in case we need to attach trip info to driver. represented by flag '1'.
                     if(tripInformation->getStartTime() == mainFlow.getTaxiCenter()->getTime()){
