@@ -73,14 +73,6 @@ public:
 
     /**
      * this function is in function overloading there is another func with same name and different parameters.
-     * this function is specifically for choice number 6 - we used function overloading for this func
-     * because in option 6 it doesn't receive a string a input , only an int.
-     * @param choice is the user's choice in this case it will be 6 for sure.
-     */
-    void choiceMenu(int choice);
-
-    /**
-     * this function is in function overloading there is another func with same name and different parameters.
      * this func will receive a choice and a string.
      * it will parse the input using beginning info reader and do what the number of the
      * choice represents.

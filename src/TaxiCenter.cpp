@@ -127,7 +127,6 @@ void TaxiCenter::completeTrip() {
 
 
     //todo
-    TripInformation* t = tripInformationList.front();
     while(tripInformationList.size()>0){
         if((tripInformationList.front()->getHasDriver()) && ((tripInformationList.front()->getRideIsOver()))){
             delete[] tripInformationList.front();

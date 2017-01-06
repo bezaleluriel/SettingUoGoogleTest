@@ -1,6 +1,3 @@
-//
-// Created by uriel on 01/01/17.
-//uriel the king
 
 #include <iostream>
 #include "src/Bfs.h"
@@ -35,6 +32,7 @@ int main(int argc, char *argv[]) {
     std::list <TripInformation*> clientTripInformationList;
     BeginningInfoReader beginningInfoReader;
     Structure* map ;
+    char buffer[1024];
     ///receiving info for driver and creating one.
     std::string info;
     cin >> info;
@@ -46,54 +44,54 @@ int main(int argc, char *argv[]) {
     int vehicleId = stoi(vec[4]);
     Driver* driver = new Driver(driverId, age, status, experience, vehicleId);
     clientDriversList.push_back(driver);
-   // std::cout << "Client Is Running" <<std::endl;
+    std::cout << "driver crated and pushed in list" <<std::endl;
 
     ///open socket
-   // cout << argv[1] << endl;
     Udp udp(0, atoi(argv[1]));
     udp.initialize();
 
     ///serialize and send driver info.
-    std::string serial_str;
-    boost::iostreams::back_insert_device<std::string> inserter(serial_str);
-    boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
-    boost::archive::binary_oarchive oa(s);
-    oa << info;
-    s.flush();
-    char buffer[1024];
-    udp.sendData(serial_str);
-    //std::cout << "send driver info" << std::endl;
+    for(int i = 0; i<clientDriversList.size(); i++){
+        std::string serial_str1;
+        boost::iostreams::back_insert_device<std::string> inserter1(serial_str1);
+        boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s1(inserter1);
+        boost::archive::binary_oarchive oa1(s1);
+        oa1 << info;
+        s1.flush();
+        udp.sendData(serial_str1);
+        std::cout << "send driver info: " << info <<std::endl;
+    }
+
 
     ///receiving serialized map info.
-    udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
-    string str6(buffer, sizeof(buffer));
-    std::string mapInfo;///creating a pointer to driver test
-    boost::iostreams::basic_array_source<char> device6(str6.c_str(), str6.size());
-    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s6(device6);
-    boost::archive::binary_iarchive ic6(s6);
-    ic6 >> mapInfo;///serialized object will be put in this pointer to driversTest
+    udp.reciveData(buffer, sizeof(buffer));//receiving data from the client
+    string str2(buffer, sizeof(buffer));
+    std::string mapInfo;//creating a pointer to driver test
+    boost::iostreams::basic_array_source<char> device2(str2.c_str(), str2.size());
+    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device2);
+    boost::archive::binary_iarchive ic2(s2);
+    ic2 >> mapInfo;//serialized object will be put in this pointer to driversTest
     std::vector<std::string> mapInfoVec = beginningInfoReader.split(mapInfo);
-    map = new Grid(stoi(mapInfoVec[0]), stoi(mapInfoVec[1]));///initiallizing size of grid.
+    map = new Grid(stoi(mapInfoVec[0]), stoi(mapInfoVec[1]));//initiallizing size of grid.
+
     ///adding obstacles to grid.
     for(int i = 2; i<mapInfoVec.size(); i+=2){
         map->markObstacle(Point(stoi(mapInfoVec[i]),stoi(mapInfoVec[i+1])));
+        std::cout << " the current obstacle being marked is: "<< stoi(mapInfoVec[i]) <<","<<stoi(mapInfoVec[i+1])<< std::endl;
     }
-    //std::cout << "receiving the map info serialization"<< std::endl;
-    //std::cout << mapInfo<< std::endl;
-
-
+    std::cout << "received the map info serialization: "<< mapInfo <<std::endl;
 
     ///receiving seriaized taxi cab.
     udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
-    //std::cout << "receiving seriaized taxi cab"<< std::endl;
 
-    string str20(buffer, sizeof(buffer));
+    string str3(buffer, sizeof(buffer));
     std::string taxiInfo;///creating a pointer to driver test
-    boost::iostreams::basic_array_source<char> device20(str20.c_str(), str20.size());
-    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s20(device20);
-    boost::archive::binary_iarchive ic(s20);
-    ic >> taxiInfo;///serialized object will be put in this pointer to driversTest
+    boost::iostreams::basic_array_source<char> device3(str3.c_str(), str3.size());
+    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s3(device3);
+    boost::archive::binary_iarchive ic3(s3);
+    ic3 >> taxiInfo;///serialized object will be put in this pointer to driversTest
     std::vector<std::string> vec2 = beginningInfoReader.split(taxiInfo);
+    std::cout << "received a seriaized taxi cab"<< taxiInfo<< std::endl;
     int cabId = stoi(vec2[0]);
     int taxiType = stoi(vec2[1]);
     char manufacturer = (vec2[2])[0];
@@ -101,14 +99,14 @@ int main(int argc, char *argv[]) {
     BaseCab* taxi;
     //in case the taxi type is standard cab:
     if(taxiType == 1){
-      //  std::cout << "in case the taxi type is standard cab"<< std::endl;
+        std::cout << "in case the taxi type is standard cab"<< std::endl;
         taxi = new StandardCab(cabId, taxiType, manufacturer, color, map);
         taxi->setLocation(map->getNode(Point(0,0)));
         clientTaxiCabsList.push_back(taxi);
     }
     //in case the taxi type is luxury cab:
     if(taxiType == 2){
-        //std::cout << "in case the taxi type is luxury cab"<< std::endl;
+        std::cout << "in case the taxi type is luxury cab"<< std::endl;
         taxi = new LuxuryCab(cabId, taxiType, manufacturer, color, map);
         taxi->setLocation(map->getNode(Point(0,0)));
         clientTaxiCabsList.push_back(taxi);
@@ -120,6 +118,7 @@ int main(int argc, char *argv[]) {
     while(driverIt != clientDriversList.end()){
         if((*(driverIt))->getVehicleId() == taxi->getCabId()){
             (*(driverIt))->setTaxiCab(taxi);
+            std::cout << "taxi matched to driver" << std::endl;
             break;
         }
         else{
@@ -128,74 +127,118 @@ int main(int argc, char *argv[]) {
     }
 
     ///test for receiving cab from server:
-  //  std::cout << "this is a test for receiving the serialized cab id&taxitype:"<< std::endl;
-  //  std::cout << taxi->getCabId() << "," ;
-  //  std::cout << taxi->getTaxiType() << std::endl;
+    std::cout << "this is a test for receiving the serialized cab id&taxitype:"<< std::endl;
+    std::cout << taxi->getCabId() << "," ;
+    std::cout << taxi->getTaxiType() << std::endl;
 
-    /**
-     * TODO - first we will receive a vector of trip info's. we will need to match them
-     * to the drivers we have according to the driver id that they contain.
-     * we will then receive a vector of drivers id's and another vector of points.
-     * there will be the same number of id's and points so we can have a double loop
-     * telling first driver to move to first point, second driver to move to second point etc'.
-     * right now we are receiving a flag (1 or 2) to show which action should be done but
-     * in the next excercise we probably wont need the flags. ****notice  after we remove flags
-     * the ride id will be equal to vec[0] not vec[1].
-     */
-
-    ///receiving tripinfo from server:
-    udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
-//    std::cout << "receiving tripinfo from server:" << std::endl;
-    /// deserialize of trip info
-    string str4(buffer, sizeof(buffer));
-    std::string tripParts;
-    boost::iostreams::basic_array_source<char> device(str4.c_str(), str4.size());
-    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s4(device);
-    boost::archive::binary_iarchive ia4(s4);
-    ia4 >> tripParts;
-
-    ///spliting up trip info string and creating new trip info.
-    std::vector<std::string> vec4 = beginningInfoReader.split(tripParts);
-    ///splitting to cases acording to flags.
-    if(stoi(vec4[0]) == 1){
-        int rideId = stoi(vec4[1]);
-        int startX = stoi(vec4[2]);
-        int startY = stoi(vec4[3]);
-        int endX = stoi(vec4[4]);
-        int endY = stoi(vec4[5]);
-        int numOfPassengers = stoi(vec4[6]);
-        double tariff = stoi(vec4[7]);
-        int time = stoi(vec4[8]);
-        TripInformation* tripInfo = new TripInformation(rideId, startX, startY, endX, endY, numOfPassengers, tariff, time);
-        tripInfo->setDriverId(stoi(vec4[9]));
-
-        ///testing for receiving of serialized trip info .
-  //      std::cout << "this is a test for receiving info trip:"<< std::endl;
-    //    std::cout << tripInfo->getDriverId() << endl;
-//    }
-//    if(stoi(vec4[0]) == 2){
+    ///receiving a string from server we will now what to do according to the first number:
+    std::string choice = "0";
+    while( stoi(choice) != 7){
         udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
-
-      //  std::cout << "receiving tripinfo from server in case of flag 2:" << std::endl;
         /// deserialize of trip info
-        string str9(buffer, sizeof(buffer));
-        std::string tripParts9;
-        boost::iostreams::basic_array_source<char> device9(str9.c_str(), str9.size());
-        boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s9(device9);
-        boost::archive::binary_iarchive ia9(s9);
-        ia9 >> tripParts9;
+        string str4(buffer, sizeof(buffer));
+        boost::iostreams::basic_array_source<char> device4(str4.c_str(), str4.size());
+        boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s4(device4);
+        boost::archive::binary_iarchive ia4(s4);
+        ia4 >> choice;
+        std::cout << "choice string received from client: " <<choice << std::endl;
 
-        ///spliting up trip info string and creating new trip info.
-        std::vector<std::string> vec9 = beginningInfoReader.split(tripParts9);
-        //why??
-//        driverId = stoi(vec9[1]);
-        // todo why was here this shit with int??
-//        int driverId = stoi(vec4[1]);
-        Point p = driver->getTaxiCab()->getLocation()->getPoint();
-        //std::cout << p << std::endl;
-        driver->getTaxiCab()->move();
-        Point p2 = driver->getTaxiCab()->getLocation()->getPoint();
-        //std::cout << p2 << std::endl;
+        ///splitting choice string to parts:
+        std::vector<std::string> vec4 = beginningInfoReader.split(choice);
+
+        ///if the first number is 1 we need to receive a trip info and attach it to a driver.
+        if(stoi(vec4[0]) == 1){
+            std:: cout <<"we are now attaching a trip info to the driver" << std::endl;
+            int rideId = stoi(vec4[1]);
+            int startX = stoi(vec4[2]);
+            int startY = stoi(vec4[3]);
+            int endX = stoi(vec4[4]);
+            int endY = stoi(vec4[5]);
+            int numOfPassengers = stoi(vec4[6]);
+            double tariff = stoi(vec4[7]);
+            int time = stoi(vec4[8]);
+            ///creating a trip info from info received.
+            TripInformation* tripInfo = new TripInformation(rideId, startX, startY, endX, endY, numOfPassengers, tariff, time);
+            tripInfo->setDriverId(stoi(vec4[9]));
+            ///getting the driver responsible for this ride and setteing this trip info as his member.
+            driverIt = clientDriversList.begin();
+            while(driverIt != clientDriversList.end()){
+                if((*(driver)).getId() == tripInfo->getDriverId()){
+                    (*(driverIt))->setTripInformation(tripInfo);
+                    (*(driverIt))->setAvailable(false);
+                    tripInfo->setHasDriver(true);
+                    (*(driverIt))->getTaxiCab()->navigate((*(driverIt))->getTripInformation()->getEnd());
+                    driverIt++;
+                }
+                else{
+                    driverIt++;
+                }
+            }
+        }
+        ///in this case we need to tell the cab to move.
+        if(stoi(vec4[0]) == 2){
+            std:: cout <<"we are now giving driver the move order" << std::endl;
+            //going through drivers list telling the unavailable ones to get to end point of their trip info.
+            driverIt = clientDriversList.begin();
+            while(driverIt != clientDriversList.end()){
+                if(!((*(driverIt))->getAvailable())){
+                    std:: cout <<"driver location before movement: ";
+                    std:: cout <<(*(driverIt))->getLocation()->getPoint().getX()<<","<<(*(driverIt))->getLocation()->getPoint().getY()<<std::endl;
+                    (*(driverIt))->getTaxiCab()->move();
+                    std:: cout <<"driver location after movement: ";
+                    std:: cout <<(*(driverIt))->getLocation()->getPoint().getX()<<","<<(*(driverIt))->getLocation()->getPoint().getY()<<std::endl;
+
+                }
+                driverIt++;
+            }
+
+            driverIt = clientDriversList.begin();
+            std::list<TripInformation*>::iterator tripInfoIt = clientTripInformationList.begin();
+
+            ///get to func
+            while(driverIt != clientDriversList.end()) {
+                if (!((*(driverIt))->getAvailable()) &&
+                    ((*(driverIt))->getTripInformation()->getEnd().compare((*(driverIt))->getLocation()->getPoint()))) {
+                    std:: cout <<"preforming get to function" << std::endl;
+                    (*(driverIt))->getTripInformation()->setRideIsOver(true);
+                    (*(driverIt))->setAvailable(true);
+                    driverIt++;
+                }
+                else{
+                    driverIt++;
+                }
+            }
+
+
+            ///complete trip func
+            tripInfoIt = clientTripInformationList.begin();
+            while(clientTripInformationList.size()>0){
+                if((clientTripInformationList.front()->getHasDriver()) && ((clientTripInformationList.front()->getRideIsOver()))){
+                    delete[] clientTripInformationList.front();
+                    clientTripInformationList.pop_front();
+                }
+                else{
+                    break;
+                }
+            }
+        }
     }
+
+    ///we will ger to this point when we receive the 7 flag from server:
+    std:: cout << "this is the end" << std::endl;
+    while(clientDriversList.size() > 0){
+        delete[] clientDriversList.front();
+        clientDriversList.pop_front();
+    }
+    while(clientTripInformationList.size() > 0){
+        delete[] clientTripInformationList.front();
+        clientTripInformationList.pop_front();
+    }
+    while(clientTaxiCabsList.size() > 0){
+        delete[] clientTaxiCabsList.front();
+        clientTaxiCabsList.pop_front();
+    }
+    std:: cout << "after deleting everything" << std::endl;
+
     return 0;
 }

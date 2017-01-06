@@ -94,16 +94,6 @@ void MainFlow::choiceMenu(int choice, std::string s) {
         }
 }
 
-void MainFlow::choiceMenu(int choice) {
-    taxiCenter.completeTrip();
-}
-
-//void MainFlow::addDriver(Driver *driver) {
-//    taxiCenter.addDriver(driver->getId(), driver->getAge(), driver->getMaritalStatus(),
-//                         driver->getYearsOfExperience(), driver->getVehicleId());
-//
-//}
-
  TaxiCenter* MainFlow::getTaxiCenter()  {
     return &taxiCenter;
 }
