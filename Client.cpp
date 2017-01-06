@@ -46,11 +46,10 @@ int main(int argc, char *argv[]) {
     int vehicleId = stoi(vec[4]);
     Driver* driver = new Driver(driverId, age, status, experience, vehicleId);
     clientDriversList.push_back(driver);
-
-    std::cout << "Client Is Running" <<std::endl;
+   // std::cout << "Client Is Running" <<std::endl;
 
     ///open socket
-    cout << argv[1] << endl;
+   // cout << argv[1] << endl;
     Udp udp(0, atoi(argv[1]));
     udp.initialize();
 
@@ -63,7 +62,7 @@ int main(int argc, char *argv[]) {
     s.flush();
     char buffer[1024];
     udp.sendData(serial_str);
-    std::cout << "send driver info" << std::endl;
+    //std::cout << "send driver info" << std::endl;
 
     ///receiving serialized map info.
     udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
@@ -79,16 +78,14 @@ int main(int argc, char *argv[]) {
     for(int i = 2; i<mapInfoVec.size(); i+=2){
         map->markObstacle(Point(stoi(mapInfoVec[i]),stoi(mapInfoVec[i+1])));
     }
-
-    std::cout << "receiving the map info serialization"<< std::endl;
-    std::cout << mapInfo<< std::endl;
-
+    //std::cout << "receiving the map info serialization"<< std::endl;
+    //std::cout << mapInfo<< std::endl;
 
 
 
     ///receiving seriaized taxi cab.
     udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
-    std::cout << "receiving seriaized taxi cab"<< std::endl;
+    //std::cout << "receiving seriaized taxi cab"<< std::endl;
 
     string str20(buffer, sizeof(buffer));
     std::string taxiInfo;///creating a pointer to driver test
@@ -104,14 +101,14 @@ int main(int argc, char *argv[]) {
     BaseCab* taxi;
     //in case the taxi type is standard cab:
     if(taxiType == 1){
-        std::cout << "in case the taxi type is standard cab"<< std::endl;
+      //  std::cout << "in case the taxi type is standard cab"<< std::endl;
         taxi = new StandardCab(cabId, taxiType, manufacturer, color, map);
         taxi->setLocation(map->getNode(Point(0,0)));
         clientTaxiCabsList.push_back(taxi);
     }
     //in case the taxi type is luxury cab:
     if(taxiType == 2){
-        std::cout << "in case the taxi type is luxury cab"<< std::endl;
+        //std::cout << "in case the taxi type is luxury cab"<< std::endl;
         taxi = new LuxuryCab(cabId, taxiType, manufacturer, color, map);
         taxi->setLocation(map->getNode(Point(0,0)));
         clientTaxiCabsList.push_back(taxi);
@@ -131,9 +128,9 @@ int main(int argc, char *argv[]) {
     }
 
     ///test for receiving cab from server:
-    std::cout << "this is a test for receiving the serialized cab id&taxitype:"<< std::endl;
-    std::cout << taxi->getCabId() << "," ;
-    std::cout << taxi->getTaxiType() << std::endl;
+  //  std::cout << "this is a test for receiving the serialized cab id&taxitype:"<< std::endl;
+  //  std::cout << taxi->getCabId() << "," ;
+  //  std::cout << taxi->getTaxiType() << std::endl;
 
     /**
      * TODO - first we will receive a vector of trip info's. we will need to match them
@@ -148,7 +145,7 @@ int main(int argc, char *argv[]) {
 
     ///receiving tripinfo from server:
     udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
-    std::cout << "receiving tripinfo from server:" << std::endl;
+//    std::cout << "receiving tripinfo from server:" << std::endl;
     /// deserialize of trip info
     string str4(buffer, sizeof(buffer));
     std::string tripParts;
@@ -173,14 +170,13 @@ int main(int argc, char *argv[]) {
         tripInfo->setDriverId(stoi(vec4[9]));
 
         ///testing for receiving of serialized trip info .
-        std::cout << "this is a test for receiving info trip:"<< std::endl;
-        std::cout << tripInfo->getDriverId() << endl;
+  //      std::cout << "this is a test for receiving info trip:"<< std::endl;
+    //    std::cout << tripInfo->getDriverId() << endl;
 //    }
 //    if(stoi(vec4[0]) == 2){
         udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
 
-
-        std::cout << "receiving tripinfo from server in case of flag 2:" << std::endl;
+      //  std::cout << "receiving tripinfo from server in case of flag 2:" << std::endl;
         /// deserialize of trip info
         string str9(buffer, sizeof(buffer));
         std::string tripParts9;
@@ -196,12 +192,10 @@ int main(int argc, char *argv[]) {
         // todo why was here this shit with int??
 //        int driverId = stoi(vec4[1]);
         Point p = driver->getTaxiCab()->getLocation()->getPoint();
-        std::cout << p << std::endl;
+        //std::cout << p << std::endl;
         driver->getTaxiCab()->move();
         Point p2 = driver->getTaxiCab()->getLocation()->getPoint();
-        std::cout << p2 << std::endl;
-
+        //std::cout << p2 << std::endl;
     }
-
     return 0;
 }

@@ -9,8 +9,10 @@ MainFlow::MainFlow(Structure* map) {
 
 void MainFlow::parseSize(std::string size) {
     std::vector<std::string> vec = beginningInfoReader.split(size);
-    mapX = stoi(vec[0]);
-    mapY = stoi(vec[1]);
+    mapX = atoi( vec[0].c_str());
+            //stoi(vec[0]);
+    mapY = atoi( vec[1].c_str());
+            //stoi(vec[1]);
 }
 
 int MainFlow::getMapX() {return mapX;}
@@ -21,8 +23,10 @@ void MainFlow::setNumOfObstacles(int num) {numOfObstacles = num;}
 
 void MainFlow::setObstacle(std::string obstacleLocation) {
     std::vector<std::string> vec = beginningInfoReader.split(obstacleLocation);
-    int x = stoi(vec[0]);
-    int y = stoi(vec[1]);
+    int x =atoi( vec[0].c_str());
+            //stoi(vec[0]);
+    int y = atoi( vec[1].c_str());
+            //stoi(vec[1]);
     //this creates a point representing the location of the obstacle.
     Point p = Point(x,y);
     //we will now get the node from the grid at that point and mark it as to contain an obstacle.
@@ -38,14 +42,14 @@ void MainFlow::choiceMenu(int choice, std::string s) {
              *case 2 is to insert a new ride.
              */
         case 2 : {
-            int rideId = stoi(vec[0]);
-            int startX = stoi(vec[1]);
-            int startY = stoi(vec[2]);
-            int endX = stoi(vec[3]);
-            int endY = stoi(vec[4]);
-            int numOfPassengers = stoi(vec[5]);
-            double tariff = stod(vec[6]);
-            int time = stoi(vec[7]);
+            int rideId = atoi( vec[0].c_str());//stoi(vec[0]);
+            int startX = atoi( vec[1].c_str());//stoi(vec[1]);
+            int startY = atoi( vec[2].c_str());//stoi(vec[2]);
+            int endX = atoi( vec[3].c_str());//stoi(vec[3]);
+            int endY = atoi( vec[4].c_str());//stoi(vec[4]);
+            int numOfPassengers = atoi( vec[5].c_str());//stoi(vec[5]);
+            double tariff = atof( vec[6].c_str());//stod(vec[6]);
+            int time = atoi( vec[7].c_str());//stoi(vec[7]);
             taxiCenter.addRide(rideId, startX, startY, endX, endY, numOfPassengers, tariff, time);
             break;
         }
@@ -54,8 +58,8 @@ void MainFlow::choiceMenu(int choice, std::string s) {
              *case 3 is to insert a new taxi.
              */
         case 3 : {
-            int cabId = stoi(vec[0]);
-            int taxiType = stoi(vec[1]);
+            int cabId = atoi( vec[0].c_str());//stoi(vec[0]);
+            int taxiType = atoi( vec[1].c_str());//stoi(vec[1]);
             char manufacturer = (vec[2])[0];
             char color = (vec[3])[0];
             taxiCenter.addTaxiCab(cabId, taxiType, manufacturer, color);
@@ -67,7 +71,7 @@ void MainFlow::choiceMenu(int choice, std::string s) {
              * the string that we received. location will be output in format '(x,y)'.
              */
         case 4 : {
-            int searchId = stoi(s);
+            int searchId = atoi(s.c_str());//stoi(s);
             taxiCenter.printDriverLocation(searchId);
             break;
                 }
@@ -75,11 +79,11 @@ void MainFlow::choiceMenu(int choice, std::string s) {
      * case 5 is to insert a driver.
      */
         case 5 : {
-            int driverId = stoi(vec[0]);
-            int age = stoi(vec[1]);
+            int driverId = atoi( vec[0].c_str());//stoi(vec[0]);
+            int age = atoi( vec[1].c_str());//stoi(vec[1]);
             char status = (vec[2])[0];
-            int experience = stoi(vec[3]);
-            int vehicleId = stoi(vec[4]);
+            int experience = atoi( vec[3].c_str());//stoi(vec[3]);
+            int vehicleId = atoi( vec[4].c_str());//stoi(vec[4]);
             taxiCenter.addDriver(driverId, age, status, experience, vehicleId);
             break;
         }

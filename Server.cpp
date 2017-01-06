@@ -76,13 +76,13 @@ int main() {
     while (choice!=7){
         ///in case choice equals 1:
         if(choice == 1){
-            std::cout << "choice1" << std::endl;
+           // std::cout << "choice1" << std::endl;
 
             //TODO - next time we will need to receive more then 1 driver (loop)
             ///receiving and desrializing driver.
             std::string a;
             std::cin >> a;///receiving number of drivers expected
-            std::cout << "Server Is Running" <<std::endl;
+            //std::cout << "Server Is Running" <<std::endl;
             udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
             string str(buffer, sizeof(buffer));
             std::string driverInfo;
@@ -90,9 +90,10 @@ int main() {
             boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
             boost::archive::binary_iarchive ia(s2);
             ia >> driverInfo;
-            std::cout << "this is a test for receiving driver:"<< std::endl;
-            std::cout << driverInfo << std::endl;
+            //std::cout << "this is a test for receiving driver:"<< std::endl;
+            //std::cout << driverInfo << std::endl;
             mainFlow.choiceMenu(5,driverInfo);
+
 
             ///serializing and sending grid size, and obstacles location.
             std::string mapInfo;
@@ -178,14 +179,15 @@ int main() {
              * drivers that need to move or to attach trip info.
              */
                 TripInformation* tripInformation = mainFlow.changeTime();
-                std::cout << "choice9 the time now is: " << mainFlow.getTaxiCenter()->getTime();
+              //  std::cout << "choice9 the time now is: " << mainFlow.getTaxiCenter()->getTime();
                 Point currLocation = mainFlow.getTaxiCenter()->getDriverList()->front()->getLocation()->getPoint();
-                std::cout << " and the location now is: " << currLocation << std::endl;
+               // std::cout << " and the location now is: " << currLocation << std::endl;
                 if((tripInformation != NULL  )){
+
                     mainFlow.getTaxiCenter()->assignDrivers();
                     ///in case we need to attach trip info to driver. represented by flag '1'.
                     if(tripInformation->getStartTime() == mainFlow.getTaxiCenter()->getTime()){
-                        std::cout << "flag1" << std::endl;
+                 //       std::cout << "flag1" << std::endl;
                         std::string tripParts;
                         int tripId = tripInformation->getRideId();
                         int startX = tripInformation->getStart().getX();
@@ -230,10 +232,10 @@ int main() {
                     ///in case we give 'go' order. represented by flag '2'.
                     //if(tripInformation->getStartTime() == mainFlow.getTaxiCenter()->getTime() - 1){
                     if(tripInformation->getStartTime() < mainFlow.getTaxiCenter()->getTime()){
-                        std::cout << "flag2" << std::endl;
+                   //     std::cout << "flag2" << std::endl;
                         //TODO make a func in taxi center that finds a driver by id and tell him and his cab to move.
                         Point p = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
-                        std::cout << "before move" << p << std::endl;
+                     //   std::cout << "before move" << p << std::endl;
 
                         mainFlow.getTaxiCenter()->getTo();
                         Driver* uriel = mainFlow.getTaxiCenter()->getDriverList()->front();
@@ -241,7 +243,7 @@ int main() {
 
 
                         Point p2 = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
-                        std::cout << "after move" << p2 << std::endl;
+                      //  std::cout << "after move" << p2 << std::endl;
 
                         std::string tripParts2;
                         tripParts2 += '2';///flag
