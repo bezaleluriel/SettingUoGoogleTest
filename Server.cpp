@@ -15,7 +15,6 @@
 #include <boost/serialization/base_object.hpp>
 
 #include <boost/archive/tmpdir.hpp>
-
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
@@ -25,7 +24,9 @@
 #include <boost/serialization/assume_abstract.hpp>
 #include <boost/serialization/export.hpp>
 #include <string>
-
+#include <stdlib.h>
+#include <string.h>
+#include <boost/lexical_cast.hpp>
 /**
  * main - this class gets input from user for size point start and end,
  * creates a reader to interperates the info.
@@ -37,9 +38,9 @@ BOOST_CLASS_EXPORT_GUID(StandardCab, "src/StandardCab")
 BOOST_CLASS_EXPORT_GUID(LuxuryCab, "src/LuxuryCab")
 BOOST_CLASS_EXPORT_GUID(Grid,"src/Grid")
 
-int main() {
+int main(int argc, char *argv[]) {
 
-    Udp udp(1, 5555);///opening port
+    Udp udp(1, atoi(argv[1]));///opening port
     udp.initialize();///connecting to port
     char buffer[1024];
     int numOfObstacles;
@@ -82,7 +83,7 @@ int main() {
             std::cin >> numberOfDrivers;
             std::cout << "Server Is Running" <<std::endl;
             // receiving serialized drivers and adding them to the driver's list in taxi center.
-            for(int i = 0; i<stoi(numberOfDrivers); i++){
+            for(int i = 0; i<std::atoi(numberOfDrivers.c_str()); i++){
                 udp.reciveData(buffer, sizeof(buffer));
                 string str1(buffer, sizeof(buffer));
                 std::string driverInfo;
@@ -117,7 +118,7 @@ int main() {
             ///serialize and send the drivers cab to the client.
             std::list<Driver*>::iterator driverIt = mainFlow.getTaxiCenter()->getDriverList()->begin();
 
-            for(int i = 0; i<stoi(numberOfDrivers); i++){
+            for(int i = 0; i<atoi(numberOfDrivers.c_str()); i++){
                 BaseCab* cab= (*(driverIt))->getTaxiCab();
                 char carType;
                 char colorType;
@@ -125,19 +126,19 @@ int main() {
                 int cabId = cab->getCabId();
                 int taxiType = cab->getTaxiType();
                 Manufacturer manufacturer = cab->getManufacturer();
-                if(manufacturer == Manufacturer::Fiat){carType = 'F';}
-                if(manufacturer == Manufacturer::Honda){carType = 'H';}
-                if(manufacturer == Manufacturer::Subaro){carType = 'S';}
-                if(manufacturer == Manufacturer::Tesla){carType = 'T';}
+                if(manufacturer == Fiat){carType = 'F';}
+                if(manufacturer == Honda){carType = 'H';}
+                if(manufacturer == Subaro){carType = 'S';}
+                if(manufacturer == Tesla){carType = 'T';}
                 Color color = cab->getColor();
-                if(color == Color::Blue){colorType = 'B';}
-                if(color == Color::Green){colorType = 'G';}
-                if(color == Color::Pink){colorType = 'P';}
-                if(color == Color::Red){colorType = 'R';}
-                if(color == Color::White){colorType = 'W';}
-                taxiInfo+=std::to_string(cabId);
+                if(color == Blue){colorType = 'B';}
+                if(color == Green){colorType = 'G';}
+                if(color == Pink){colorType = 'P';}
+                if(color == Red){colorType = 'R';}
+                if(color == White){colorType = 'W';}
+                taxiInfo+=  boost::lexical_cast<std::string>(cabId);//to_string(cabId);
                 taxiInfo+=',';
-                taxiInfo+=std::to_string(taxiType);
+                taxiInfo+=boost::lexical_cast<std::string>(taxiType);//to_string(taxiType);
                 taxiInfo+=',';
                 taxiInfo+=carType;
                 taxiInfo+=',';
@@ -187,23 +188,23 @@ int main() {
                         int time = tripInformation->getStartTime();
                         tripParts += '1';
                         tripParts += ',';
-                        tripParts += std::to_string(tripId);
+                        tripParts += boost::lexical_cast<std::string>(tripId);//to_string(tripId);
                         tripParts += ',';
-                        tripParts += std::to_string(startX);
+                        tripParts += boost::lexical_cast<std::string>(startX);//to_string(startX);
                         tripParts += ',';
-                        tripParts += std::to_string(startY);
+                        tripParts += boost::lexical_cast<std::string>(startY);//to_string(startY);
                         tripParts += ',';
-                        tripParts += std::to_string(endX);
+                        tripParts += boost::lexical_cast<std::string>(endX);//to_string(endX);
                         tripParts += ',';
-                        tripParts += std::to_string(endY);
+                        tripParts += boost::lexical_cast<std::string>(endY);//to_string(endY);
                         tripParts += ',';
-                        tripParts += std::to_string(numOfPassengers);
+                        tripParts += boost::lexical_cast<std::string>(numOfPassengers);//to_string(numOfPassengers);
                         tripParts += ',';
-                        tripParts += std::to_string(tariff);
+                        tripParts += boost::lexical_cast<std::string>(tariff);//to_string(tariff);
                         tripParts += ',';
-                        tripParts += std::to_string(time);
+                        tripParts += boost::lexical_cast<std::string>(time);//to_string(time);
                         tripParts += ',';
-                        tripParts += std::to_string(tripInformation->getDriverId());
+                        tripParts += boost::lexical_cast<std::string>(tripInformation->getDriverId());//to_string(tripInformation->getDriverId());
 
 
                         ///sending trip info to client:

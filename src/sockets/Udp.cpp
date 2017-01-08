@@ -111,3 +111,7 @@ int Udp::reciveData(char* buffer, int size) {
 	//return correct if there were no error
 	return bytes;
 }
+
+void Udp::setIp(string ip) {
+	this->ip_address = ip;
+}

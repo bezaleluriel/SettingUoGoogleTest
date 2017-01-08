@@ -18,6 +18,7 @@
 #include <boost/serialization/export.hpp>
 #include "src/StandardCab.h"
 #include "src/LuxuryCab.h"
+//#include "src/GETIP.h"
 #include <boost/serialization/export.hpp>
 
 using namespace std;
@@ -37,18 +38,19 @@ int main(int argc, char *argv[]) {
     std::string info;
     cin >> info;
     std::vector<std::string> vec = beginningInfoReader.split(info);
-    int driverId = stoi(vec[0]);
-    int age = stoi(vec[1]);
+    int driverId = atoi(vec[0].c_str());//stoi(vec[0]);
+    int age = atoi(vec[1].c_str());//stoi(vec[1]);
     char status = (vec[2])[0];
-    int experience = stoi(vec[3]);
-    int vehicleId = stoi(vec[4]);
+    int experience = atoi(vec[3].c_str());//stoi(vec[3]);
+    int vehicleId = atoi(vec[4].c_str());//stoi(vec[4]);
     Driver* driver = new Driver(driverId, age, status, experience, vehicleId);
     clientDriversList.push_back(driver);
     std::cout << "driver crated and pushed in list" <<std::endl;
 
     ///open socket
-    Udp udp(0, atoi(argv[1]));
+    Udp udp(0, atoi(argv[2]));
     udp.initialize();
+    udp.setIp(argv[1]);
 
     ///serialize and send driver info.
     for(int i = 0; i<clientDriversList.size(); i++){
@@ -72,12 +74,12 @@ int main(int argc, char *argv[]) {
     boost::archive::binary_iarchive ic2(s2);
     ic2 >> mapInfo;//serialized object will be put in this pointer to driversTest
     std::vector<std::string> mapInfoVec = beginningInfoReader.split(mapInfo);
-    map = new Grid(stoi(mapInfoVec[0]), stoi(mapInfoVec[1]));//initiallizing size of grid.
+    map = new Grid(atoi(mapInfoVec[0].c_str()), atoi(mapInfoVec[1].c_str()));//initiallizing size of grid.
 
     ///adding obstacles to grid.
     for(int i = 2; i<mapInfoVec.size(); i+=2){
-        map->markObstacle(Point(stoi(mapInfoVec[i]),stoi(mapInfoVec[i+1])));
-        std::cout << " the current obstacle being marked is: "<< stoi(mapInfoVec[i]) <<","<<stoi(mapInfoVec[i+1])<< std::endl;
+        map->markObstacle(Point(atoi(mapInfoVec[i].c_str()),atoi(mapInfoVec[i+1].c_str())));
+        std::cout << " the current obstacle being marked is: "<< atoi(mapInfoVec[i].c_str()) <<","<<atoi(mapInfoVec[i+1].c_str())<< std::endl;
     }
     std::cout << "received the map info serialization: "<< mapInfo <<std::endl;
 
@@ -92,8 +94,8 @@ int main(int argc, char *argv[]) {
     ic3 >> taxiInfo;///serialized object will be put in this pointer to driversTest
     std::vector<std::string> vec2 = beginningInfoReader.split(taxiInfo);
     std::cout << "received a seriaized taxi cab"<< taxiInfo<< std::endl;
-    int cabId = stoi(vec2[0]);
-    int taxiType = stoi(vec2[1]);
+    int cabId = atoi(vec2[0].c_str());
+    int taxiType = atoi(vec2[1].c_str());
     char manufacturer = (vec2[2])[0];
     char color = (vec2[3])[0];
     BaseCab* taxi;
@@ -133,7 +135,7 @@ int main(int argc, char *argv[]) {
 
     ///receiving a string from server we will now what to do according to the first number:
     std::string choice = "0";
-    while( stoi(choice) != 7){
+    while( atoi(choice.c_str()) != 7){
         udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
         /// deserialize of trip info
         string str4(buffer, sizeof(buffer));
@@ -147,19 +149,19 @@ int main(int argc, char *argv[]) {
         std::vector<std::string> vec4 = beginningInfoReader.split(choice);
 
         ///if the first number is 1 we need to receive a trip info and attach it to a driver.
-        if(stoi(vec4[0]) == 1){
+        if(atoi(vec4[0].c_str()) == 1){
             std:: cout <<"we are now attaching a trip info to the driver" << std::endl;
-            int rideId = stoi(vec4[1]);
-            int startX = stoi(vec4[2]);
-            int startY = stoi(vec4[3]);
-            int endX = stoi(vec4[4]);
-            int endY = stoi(vec4[5]);
-            int numOfPassengers = stoi(vec4[6]);
-            double tariff = stoi(vec4[7]);
-            int time = stoi(vec4[8]);
+            int rideId = atoi(vec4[1].c_str());
+            int startX = atoi(vec4[2].c_str());
+            int startY = atoi(vec4[3].c_str());
+            int endX = atoi(vec4[4].c_str());
+            int endY = atoi(vec4[5].c_str());
+            int numOfPassengers = atoi(vec4[6].c_str());
+            double tariff = atoi(vec4[7].c_str());
+            int time = atoi(vec4[8].c_str());
             ///creating a trip info from info received.
             TripInformation* tripInfo = new TripInformation(rideId, startX, startY, endX, endY, numOfPassengers, tariff, time);
-            tripInfo->setDriverId(stoi(vec4[9]));
+            tripInfo->setDriverId(atoi(vec4[9].c_str()));
             ///getting the driver responsible for this ride and setteing this trip info as his member.
             driverIt = clientDriversList.begin();
             while(driverIt != clientDriversList.end()){
@@ -176,7 +178,7 @@ int main(int argc, char *argv[]) {
             }
         }
         ///in this case we need to tell the cab to move.
-        if(stoi(vec4[0]) == 2){
+        if(atoi(vec4[0].c_str()) == 2){
             std:: cout <<"we are now giving driver the move order" << std::endl;
             //going through drivers list telling the unavailable ones to get to end point of their trip info.
             driverIt = clientDriversList.begin();
@@ -234,10 +236,10 @@ int main(int argc, char *argv[]) {
         delete[] clientTripInformationList.front();
         clientTripInformationList.pop_front();
     }
-    while(clientTaxiCabsList.size() > 0){
-        delete[] clientTaxiCabsList.front();
-        clientTaxiCabsList.pop_front();
-    }
+//    while(clientTaxiCabsList.size() > 0){
+//        delete[] clientTaxiCabsList.front();
+//        clientTaxiCabsList.pop_front();
+ //   }
     std:: cout << "after deleting everything" << std::endl;
 
     return 0;

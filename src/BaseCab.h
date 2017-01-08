@@ -5,8 +5,8 @@
 #include "GridNode.h"
 #include "Passenger.h"
 #include "Structure.h"
-#include "Manufacturer.h"
-#include "Color.h"
+//#include "Manufacturer.h"
+//#include "Color.h"
 #include "Grid.h"
 #include "Gps.h"
 #include <string>
@@ -33,6 +33,13 @@
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/assume_abstract.hpp>
 #include <boost/serialization/export.hpp>
+
+enum  Color{
+    Red, Blue, Green, Pink, White
+};
+enum  Manufacturer {
+        Honda, Subaro, Tesla, Fiat
+    };
 
 class BaseCab {
     friend class boost::serialization::access;

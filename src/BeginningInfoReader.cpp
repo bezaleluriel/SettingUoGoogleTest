@@ -11,7 +11,7 @@
  * constructor.
  * @return void.
  */
-BeginningInfoReader::BeginningInfoReader(){};
+BeginningInfoReader::BeginningInfoReader(){}
 
 std::vector<std::string> BeginningInfoReader::split(std::string &s) {
     std::vector<std::string> vec;

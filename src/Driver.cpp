@@ -2,6 +2,7 @@
 
 Driver::Driver() {}
 
+
 Driver::Driver(int driverId, int driverAge, char status, int experience, int cabVehicleId) {
     id = driverId;
     age = driverAge;
@@ -9,16 +10,16 @@ Driver::Driver(int driverId, int driverAge, char status, int experience, int cab
     vehicleId = cabVehicleId;
     switch (status) {
         case 'S' :
-            maritalStatus = MaritalStatus::Single;
+            maritalStatus = Single;
             break;
         case 'M' :
-            maritalStatus = MaritalStatus::Married;
+            maritalStatus = Married;
             break;
         case 'W' :
-            maritalStatus = MaritalStatus::Widowed;
+            maritalStatus = Widowed;
             break;
         case 'D' :
-            maritalStatus = MaritalStatus::Divorced;
+            maritalStatus = Divorced;
             break;
         default :
             break;

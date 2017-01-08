@@ -15,35 +15,35 @@ BaseCab::BaseCab(int cabId, int taxiType, char manufacturer, char color, Structu
     BaseCab::map = map;
     switch (manufacturer) {
         case 'H' :
-            BaseCab::manufacturer = Manufacturer::Honda;
+            BaseCab::manufacturer = Honda;
             break;
         case 'S' :
-            BaseCab::manufacturer = Manufacturer::Subaro;
+            BaseCab::manufacturer = Subaro;
             break;
         case 'T' :
-            BaseCab::manufacturer = Manufacturer::Tesla;
+            BaseCab::manufacturer = Tesla;
             break;
         case 'F' :
-            BaseCab::manufacturer = Manufacturer::Fiat;
+            BaseCab::manufacturer = Fiat;
             break;
         default :
             break;
     }
     switch (color) {
         case 'R' :
-            BaseCab::color = Color ::Red;
+            BaseCab::color = Red;
             break;
         case 'B' :
-            BaseCab::color = Color ::Blue;
+            BaseCab::color = Blue;
             break;
         case 'G' :
-            BaseCab::color = Color ::Green;
+            BaseCab::color = Green;
             break;
         case 'P' :
-            BaseCab::color = Color ::Pink;
+            BaseCab::color = Pink;
             break;
         case 'W' :
-            BaseCab::color = Color ::White;
+            BaseCab::color = White;
             break;
         default :
             break;

@@ -25,7 +25,7 @@ set(SOURCE_FILES Tests/ClassName.h Tests/test.cpp Tests/PoinTest.cpp src/Point.c
         Tests/StandartCabTest.cpp src/BaseCab.cpp src/BaseCab.h Tests/LaxuryCabTest.cpp
         src/sockets/Socket.cpp src/sockets/Socket.h src/sockets/Udp.cpp src/sockets/Udp.h)
 
-add_executable(Client ${SOURCE_FILES} Client.cpp)
+add_executable(Client ${SOURCE_FILES} Client.cpp )
         target_link_libraries(Client gtest gtest_main)
 
 add_executable(Server ${SOURCE_FILES} Server.cpp)

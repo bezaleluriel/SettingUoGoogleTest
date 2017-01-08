@@ -14,6 +14,8 @@
 #include <cstring>
 #include <iostream>
 #include <string>
+
+
 using namespace std;
 
 //return values to each function if error happened
@@ -41,6 +43,9 @@ protected:
 	int backLog;
 	//port number
 	int port_number;
+//    GETIP getip;
+
+    string blabla;
 public:
 	/***********************************************************************
 	* function name: Socket												   *
@@ -80,8 +85,6 @@ public:
 	* the data															   *
 	***********************************************************************/
 	virtual int reciveData(char* buffer, int size) = 0;
-
-
 
 
 };

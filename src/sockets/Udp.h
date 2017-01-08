@@ -49,6 +49,8 @@ public:
 	* the data															   *
 	***********************************************************************/
 	int reciveData(char* buffer, int size);
+
+	void setIp(string ip);
 };
 
 #endif /* UDP_H_ */
