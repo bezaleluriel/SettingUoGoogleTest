@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
         oa1 << info;
         s1.flush();
         udp.sendData(serial_str1);
-        std::cout << "send driver info: " << info <<std::endl;
+        //std::cout << "send driver info: " << info <<std::endl;
     }
 
 
@@ -79,9 +79,9 @@ int main(int argc, char *argv[]) {
     ///adding obstacles to grid.
     for(int i = 2; i<mapInfoVec.size(); i+=2){
         map->markObstacle(Point(atoi(mapInfoVec[i].c_str()),atoi(mapInfoVec[i+1].c_str())));
-        std::cout << " the current obstacle being marked is: "<< atoi(mapInfoVec[i].c_str()) <<","<<atoi(mapInfoVec[i+1].c_str())<< std::endl;
+        //std::cout << " the current obstacle being marked is: "<< atoi(mapInfoVec[i].c_str()) <<","<<atoi(mapInfoVec[i+1].c_str())<< std::endl;
     }
-    std::cout << "received the map info serialization: "<< mapInfo <<std::endl;
+    //std::cout << "received the map info serialization: "<< mapInfo <<std::endl;
 
     ///receiving seriaized taxi cab.
     udp.reciveData(buffer, sizeof(buffer));///receiving data from the client
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
     boost::archive::binary_iarchive ic3(s3);
     ic3 >> taxiInfo;///serialized object will be put in this pointer to driversTest
     std::vector<std::string> vec2 = beginningInfoReader.split(taxiInfo);
-    std::cout << "received a seriaized taxi cab"<< taxiInfo<< std::endl;
+    //std::cout << "received a seriaized taxi cab"<< taxiInfo<< std::endl;
     int cabId = atoi(vec2[0].c_str());
     int taxiType = atoi(vec2[1].c_str());
     char manufacturer = (vec2[2])[0];
@@ -101,14 +101,14 @@ int main(int argc, char *argv[]) {
     BaseCab* taxi;
     //in case the taxi type is standard cab:
     if(taxiType == 1){
-        std::cout << "in case the taxi type is standard cab"<< std::endl;
+      //  std::cout << "in case the taxi type is standard cab"<< std::endl;
         taxi = new StandardCab(cabId, taxiType, manufacturer, color, map);
         taxi->setLocation(map->getNode(Point(0,0)));
         clientTaxiCabsList.push_back(taxi);
     }
     //in case the taxi type is luxury cab:
     if(taxiType == 2){
-        std::cout << "in case the taxi type is luxury cab"<< std::endl;
+        //std::cout << "in case the taxi type is luxury cab"<< std::endl;
         taxi = new LuxuryCab(cabId, taxiType, manufacturer, color, map);
         taxi->setLocation(map->getNode(Point(0,0)));
         clientTaxiCabsList.push_back(taxi);
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
     while(driverIt != clientDriversList.end()){
         if((*(driverIt))->getVehicleId() == taxi->getCabId()){
             (*(driverIt))->setTaxiCab(taxi);
-            std::cout << "taxi matched to driver" << std::endl;
+          //  std::cout << "taxi matched to driver" << std::endl;
             break;
         }
         else{
@@ -129,9 +129,9 @@ int main(int argc, char *argv[]) {
     }
 
     ///test for receiving cab from server:
-    std::cout << "this is a test for receiving the serialized cab id&taxitype:"<< std::endl;
-    std::cout << taxi->getCabId() << "," ;
-    std::cout << taxi->getTaxiType() << std::endl;
+    //std::cout << "this is a test for receiving the serialized cab id&taxitype:"<< std::endl;
+    //std::cout << taxi->getCabId() << "," ;
+    //std::cout << taxi->getTaxiType() << std::endl;
 
     ///receiving a string from server we will now what to do according to the first number:
     std::string choice = "0";
@@ -143,14 +143,14 @@ int main(int argc, char *argv[]) {
         boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s4(device4);
         boost::archive::binary_iarchive ia4(s4);
         ia4 >> choice;
-        std::cout << "choice string received from client: " <<choice << std::endl;
+      //  std::cout << "choice string received from client: " <<choice << std::endl;
 
         ///splitting choice string to parts:
         std::vector<std::string> vec4 = beginningInfoReader.split(choice);
 
         ///if the first number is 1 we need to receive a trip info and attach it to a driver.
         if(atoi(vec4[0].c_str()) == 1){
-            std:: cout <<"we are now attaching a trip info to the driver" << std::endl;
+        //    std:: cout <<"we are now attaching a trip info to the driver" << std::endl;
             int rideId = atoi(vec4[1].c_str());
             int startX = atoi(vec4[2].c_str());
             int startY = atoi(vec4[3].c_str());
@@ -179,16 +179,16 @@ int main(int argc, char *argv[]) {
         }
         ///in this case we need to tell the cab to move.
         if(atoi(vec4[0].c_str()) == 2){
-            std:: cout <<"we are now giving driver the move order" << std::endl;
+          //  std:: cout <<"we are now giving driver the move order" << std::endl;
             //going through drivers list telling the unavailable ones to get to end point of their trip info.
             driverIt = clientDriversList.begin();
             while(driverIt != clientDriversList.end()){
                 if(!((*(driverIt))->getAvailable())){
-                    std:: cout <<"driver location before movement: ";
-                    std:: cout <<(*(driverIt))->getLocation()->getPoint().getX()<<","<<(*(driverIt))->getLocation()->getPoint().getY()<<std::endl;
+            //        std:: cout <<"driver location before movement: ";
+              //      std:: cout <<(*(driverIt))->getLocation()->getPoint().getX()<<","<<(*(driverIt))->getLocation()->getPoint().getY()<<std::endl;
                     (*(driverIt))->getTaxiCab()->move();
-                    std:: cout <<"driver location after movement: ";
-                    std:: cout <<(*(driverIt))->getLocation()->getPoint().getX()<<","<<(*(driverIt))->getLocation()->getPoint().getY()<<std::endl;
+                  //  std:: cout <<"driver location after movement: ";
+                //    std:: cout <<(*(driverIt))->getLocation()->getPoint().getX()<<","<<(*(driverIt))->getLocation()->getPoint().getY()<<std::endl;
 
                 }
                 driverIt++;
@@ -201,7 +201,7 @@ int main(int argc, char *argv[]) {
             while(driverIt != clientDriversList.end()) {
                 if (!((*(driverIt))->getAvailable()) &&
                     ((*(driverIt))->getTripInformation()->getEnd().compare((*(driverIt))->getLocation()->getPoint()))) {
-                    std:: cout <<"preforming get to function" << std::endl;
+                    //std:: cout <<"preforming get to function" << std::endl;
                     (*(driverIt))->getTripInformation()->setRideIsOver(true);
                     (*(driverIt))->setAvailable(true);
                     driverIt++;
@@ -227,7 +227,7 @@ int main(int argc, char *argv[]) {
     }
 
     ///we will ger to this point when we receive the 7 flag from server:
-    std:: cout << "this is the end" << std::endl;
+    //std:: cout << "this is the end" << std::endl;
     while(clientDriversList.size() > 0){
         delete[] clientDriversList.front();
         clientDriversList.pop_front();
@@ -240,7 +240,7 @@ int main(int argc, char *argv[]) {
 //        delete[] clientTaxiCabsList.front();
 //        clientTaxiCabsList.pop_front();
  //   }
-    std:: cout << "after deleting everything" << std::endl;
+    //std:: cout << "after deleting everything" << std::endl;
 
     return 0;
 }

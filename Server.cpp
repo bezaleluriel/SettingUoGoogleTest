@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
         if(choice == 1){
             //receiving a string representing the number of drivers expected.
             std::cin >> numberOfDrivers;
-            std::cout << "Server Is Running" <<std::endl;
+           // std::cout << "Server Is Running" <<std::endl;
             // receiving serialized drivers and adding them to the driver's list in taxi center.
             for(int i = 0; i<std::atoi(numberOfDrivers.c_str()); i++){
                 udp.reciveData(buffer, sizeof(buffer));
@@ -91,8 +91,8 @@ int main(int argc, char *argv[]) {
                 boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s1(device1);
                 boost::archive::binary_iarchive ia1(s1);
                 ia1 >> driverInfo;
-                std::cout << "this is a test for receiving driver: "<< std::endl;
-                std::cout << "the driver info string is:" <<driverInfo << std::endl;
+             //   std::cout << "this is a test for receiving driver: "<< std::endl;
+               // std::cout << "the driver info string is:" <<driverInfo << std::endl;
                 //goes to option 5 in main flow menu - add a driver.
                 mainFlow.choiceMenu(5,driverInfo);
                 driverInfo.clear();
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
             oa2 << mapInfo;
             s2.flush();
             udp.sendData(mapInfoSerialized);
-            std:: cout << "just sent map info data: "<< mapInfo << std::endl;
+            //std:: cout << "just sent map info data: "<< mapInfo << std::endl;
 
             ///serialize and send the drivers cab to the client.
             std::list<Driver*>::iterator driverIt = mainFlow.getTaxiCenter()->getDriverList()->begin();
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
                 oa3 << taxiInfo;
                 s3.flush();
                 udp.sendData(taxiInfoSerialized);
-                std::cout << "just sent taxi info string : " << taxiInfo << std::endl;
+              //  std::cout << "just sent taxi info string : " << taxiInfo << std::endl;
                 driverIt++;
 
             }
@@ -168,15 +168,15 @@ int main(int argc, char *argv[]) {
         if(choice == 9){
 
                 TripInformation* tripInformation = mainFlow.changeTime();
-                std::cout << "choice9 the time now is: " << mainFlow.getTaxiCenter()->getTime()<< std::endl;
+             //   std::cout << "choice9 the time now is: " << mainFlow.getTaxiCenter()->getTime()<< std::endl;
                 Point currLocation = mainFlow.getTaxiCenter()->getDriverList()->front()->getLocation()->getPoint();
-                std::cout << " and the location now is: " << currLocation << std::endl;
+               // std::cout << " and the location now is: " << currLocation << std::endl;
                 if((tripInformation != NULL  )){
 
                     mainFlow.getTaxiCenter()->assignDrivers();
                     ///in case we need to attach trip info to driver. represented by flag '1'.
                     if(tripInformation->getStartTime() == mainFlow.getTaxiCenter()->getTime()){
-                        std::cout << "flag1" << std::endl;
+                 //       std::cout << "flag1" << std::endl;
                         std::string tripParts;
                         int tripId = tripInformation->getRideId();
                         int startX = tripInformation->getStart().getX();
@@ -222,14 +222,14 @@ int main(int argc, char *argv[]) {
                     if(tripInformation->getStartTime() < mainFlow.getTaxiCenter()->getTime()){
 
                         Point p = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
-                        std::cout << "before move" << p << std::endl;
+                   //     std::cout << "before move" << p << std::endl;
 
                         mainFlow.getTaxiCenter()->getTo();
                         mainFlow.getTaxiCenter()->completeTrip();
 
 
                         Point p2 = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
-                        std::cout << "after move" << p2 << std::endl;
+                     //   std::cout << "after move" << p2 << std::endl;
 
                         std::string tripParts2;
                         tripParts2 += '2';//flag
