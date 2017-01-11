@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     int vehicleId = atoi(vec[4].c_str());//stoi(vec[4]);
     Driver* driver = new Driver(driverId, age, status, experience, vehicleId);
     clientDriversList.push_back(driver);
-    std::cout << "driver crated and pushed in list" <<std::endl;
+   // std::cout << "driver crated and pushed in list" <<std::endl;
 
     ///open socket
     Udp udp(0, atoi(argv[2]));
@@ -216,7 +216,7 @@ int main(int argc, char *argv[]) {
             tripInfoIt = clientTripInformationList.begin();
             while(clientTripInformationList.size()>0){
                 if((clientTripInformationList.front()->getHasDriver()) && ((clientTripInformationList.front()->getRideIsOver()))){
-                    delete[] clientTripInformationList.front();
+                    delete clientTripInformationList.front();
                     clientTripInformationList.pop_front();
                 }
                 else{
@@ -226,20 +226,22 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    ///we will ger to this point when we receive the 7 flag from server:
+    ///we will get to this point when we receive the 7 flag from server:
     //std:: cout << "this is the end" << std::endl;
     while(clientDriversList.size() > 0){
-        delete[] clientDriversList.front();
+        delete clientDriversList.front();
         clientDriversList.pop_front();
     }
     while(clientTripInformationList.size() > 0){
-        delete[] clientTripInformationList.front();
+        delete clientTripInformationList.front();
         clientTripInformationList.pop_front();
     }
-//    while(clientTaxiCabsList.size() > 0){
-//        delete[] clientTaxiCabsList.front();
-//        clientTaxiCabsList.pop_front();
- //   }
+    while(clientTaxiCabsList.size() > 0){
+        delete clientTaxiCabsList.front();
+        clientTaxiCabsList.pop_front();
+    }
+
+    delete  map;
     //std:: cout << "after deleting everything" << std::endl;
 
     return 0;
