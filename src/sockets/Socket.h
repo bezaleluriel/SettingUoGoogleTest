@@ -14,8 +14,6 @@
 #include <cstring>
 #include <iostream>
 #include <string>
-
-
 using namespace std;
 
 //return values to each function if error happened
@@ -34,6 +32,7 @@ using namespace std;
 
 class Socket {
 protected:
+
 	//true is the socket is for a server, false if for a client
 	bool isServer;
 	//the socket descriptor return from sock()
@@ -43,9 +42,6 @@ protected:
 	int backLog;
 	//port number
 	int port_number;
-//    GETIP getip;
-
-    string blabla;
 public:
 	/***********************************************************************
 	* function name: Socket												   *
@@ -86,6 +82,15 @@ public:
 	***********************************************************************/
 	virtual int reciveData(char* buffer, int size) = 0;
 
+    /***********************************************************************
+    * function name: getSocketDescriptor	`											   *
+    * The Input: none										               *
+    * The output: int number representing the socket descriptor            *
+    * The Function operation: returning the socket descriptor (integer).									   *
+    ***********************************************************************/
+    virtual int getSocketDescriptor() = 0;
+
+    virtual int acceptClient() = 0;
 
 };
 

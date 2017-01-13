@@ -7,7 +7,8 @@ set(BOOST_ROOT CACHE PATH "/usr/include/boost/")
 find_package(Boost 1.58.0 COMPONENTS serialization system)
 include_directories(${Boost_INCLUDE_DIR})
 
-set(SOURCE_FILES Tests/ClassName.h Tests/test.cpp Tests/PoinTest.cpp src/Point.cpp
+set(SOURCE_FILES src/sockets/Socket.cpp src/sockets/Socket.h src/sockets/Tcp.cpp
+        src/sockets/Tcp.h Tests/ClassName.h Tests/test.cpp Tests/PoinTest.cpp src/Point.cpp
         src/Point.h src/BeginningInfoReader.cpp
         src/BeginningInfoReader.h src/Bfs.cpp src/Bfs.h src/Grid.cpp src/Grid.h src/GridNode.cpp
         src/GridNode.h src/Structure.h
@@ -23,7 +24,7 @@ set(SOURCE_FILES Tests/ClassName.h Tests/test.cpp Tests/PoinTest.cpp src/Point.c
         src/MainFlow.cpp src/MainFlow.h
         Tests/PassengerTest.cpp Tests/TaxiCenterTest.cpp Tests/TripInformationTest.cpp
         Tests/StandartCabTest.cpp src/BaseCab.cpp src/BaseCab.h Tests/LaxuryCabTest.cpp
-        src/sockets/Socket.cpp src/sockets/Socket.h src/sockets/Udp.cpp src/sockets/Udp.h)
+        )
 
 add_executable(Client ${SOURCE_FILES} Client.cpp )
         target_link_libraries(Client gtest gtest_main)

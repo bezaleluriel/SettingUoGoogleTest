@@ -11,10 +11,9 @@
 
 #define NONE 0
 
-
 /***********************************************************************
 * function name: Socket												   *
-* The Input: none					~								   *
+* The Input: none													   *
 * The output: none										               *
 * The Function operation: creating new Socket object, with the computer*
 * ip, and no port number and socket descriptor, 0 backlogs.			   *
@@ -36,6 +35,8 @@ Socket::Socket() {
 Socket::~Socket() {
 	close(this->socketDescriptor);
 }
+
+
 
 
 
