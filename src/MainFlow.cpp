@@ -1,5 +1,8 @@
 #include "MainFlow.h"
 
+std::map<int, int> instructionsMap;
+std::map<int,int>::iterator mapIt;
+
 MainFlow::MainFlow() {}
 
 MainFlow::MainFlow(Structure* map) {

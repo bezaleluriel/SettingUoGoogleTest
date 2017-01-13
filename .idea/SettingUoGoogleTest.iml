@@ -4,10 +4,11 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/Server.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Grid.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ThreadInfo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Passenger.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Point.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Bfs.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Point.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/LuxuryCab.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Gps.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/StandardCab.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Grid.cpp" isTestSource="false" />
@@ -18,9 +19,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/BeginningInfoReader.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Driver.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Color.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/LuxuryCab.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Gps.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/StandardCab.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/MaritalStatus.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/BeginningInfoReader.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Point.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Passenger.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/MainFlow.h" isTestSource="false" />
@@ -30,16 +33,15 @@
       <sourceFolder url="file://$MODULE_DIR$/src/BaseCab.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Structure.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Bfs.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/LuxuryCab.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ThreadInfo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/GridNode.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Manufacturer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/BeginningInfoReader.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/LuxuryCab.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/BaseCab.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Grid.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sockets/Socket.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/sockets/Socket.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sockets/Tcp.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/sockets/Tcp.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/sockets/Socket.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Client.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lib/googletest-master/googlemock/src/gmock-all.cc" isTestSource="false" />

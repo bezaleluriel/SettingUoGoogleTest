@@ -26,7 +26,7 @@ set(SOURCE_FILES src/sockets/Socket.cpp src/sockets/Socket.h src/sockets/Tcp.cpp
         Tests/StandartCabTest.cpp src/BaseCab.cpp src/BaseCab.h Tests/LaxuryCabTest.cpp
         )
 
-add_executable(Client ${SOURCE_FILES} Client.cpp )
+add_executable(Client ${SOURCE_FILES} Client.cpp src/ThreadInfo.cpp src/ThreadInfo.h)
         target_link_libraries(Client gtest gtest_main)
 
 add_executable(Server ${SOURCE_FILES} Server.cpp)

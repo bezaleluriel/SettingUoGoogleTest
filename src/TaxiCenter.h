@@ -2,6 +2,7 @@
 #define EX1_TAXICENTER_H
 #include <iostream>
 #include <list>
+#include <map>
 #include "Driver.h"
 #include "TripInformation.h"
 #include "Structure.h"

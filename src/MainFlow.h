@@ -15,6 +15,9 @@
  *
  */
 
+extern std::map<int, int> instructionsMap;
+extern std::map<int,int>::iterator mapIt;
+
 class MainFlow {
 
 private:
