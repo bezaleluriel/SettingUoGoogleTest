@@ -60,6 +60,8 @@ public:
     int getSocketDescriptor();
 
     int acceptClient();
+
+	void setIp(string ip);
 };
 
 #endif /* TCP_H_ */

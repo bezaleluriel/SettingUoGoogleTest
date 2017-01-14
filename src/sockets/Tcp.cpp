@@ -139,7 +139,10 @@ int Tcp::getSocketDescriptor() {
 }
 
 
-
+/**
+ *
+ * @return
+ */
 int Tcp::acceptClient() {
     struct sockaddr_in client_sin;
     unsigned int addr_len = sizeof(client_sin);
@@ -150,4 +153,8 @@ int Tcp::acceptClient() {
         return ERROR_ACCEPT;
     }
     return this->descriptorCommunicateClient;
+}
+
+void Tcp::setIp(string ip) {
+	this->ip_address = ip;
 }

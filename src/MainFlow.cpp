@@ -1,7 +1,6 @@
 #include "MainFlow.h"
 
-std::map<int, int> instructionsMap;
-std::map<int,int>::iterator mapIt;
+std::map<int, std::queue<int>> instructionsMap;
 
 MainFlow::MainFlow() {}
 
@@ -101,8 +100,8 @@ void MainFlow::choiceMenu(int choice, std::string s) {
     return &taxiCenter;
 }
 
-TripInformation *MainFlow::changeTime() {
-    return taxiCenter.checkTime();
+void MainFlow::changeTime() {
+    taxiCenter.checkTime();
 
 }
 

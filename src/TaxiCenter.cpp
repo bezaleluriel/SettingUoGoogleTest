@@ -1,13 +1,15 @@
 #include "TaxiCenter.h"
 #include "StandardCab.h"
 #include "LuxuryCab.h"
+#include "MainFlow.h"
+
 TaxiCenter::TaxiCenter() {
 }
 TaxiCenter::TaxiCenter(Structure* structure) {
     map = structure;
     time = 0;
 }
-
+//todo check memory leaq
 TaxiCenter::~TaxiCenter() {
     while(driversList.size() > 0){
         delete[] driversList.front();
@@ -24,6 +26,8 @@ TaxiCenter::~TaxiCenter() {
 }
 
 void TaxiCenter::addDriver(int id, int age, char status, int experience, int vehicleId) {
+    std::queue<int> q;
+    instructionsMap.insert ( std::pair<int,std::queue<int>>(id,q));
     Driver* driver = new Driver(id, age, status, experience, vehicleId);
     driversList.push_back(driver);
     std::list<BaseCab*>::iterator taxiIt = taxiCabsList.begin();
@@ -76,7 +80,10 @@ void TaxiCenter::assignDrivers() {
     std::list<TripInformation*>::iterator tripIt = tripInformationList.begin();
     while((driverIt != driversList.end()) && (tripIt != tripInformationList.end())){
         //setting the driver id of first trip to be the first driver.
-        if(((*(driverIt))->getLocation()->getPoint().compare((*(tripIt))->getStart())) &&((*(tripIt))->getStartTime() == time)){
+        Point driverLocation((*(driverIt))->getLocation()->getPoint());
+        Point tripStart((*(tripIt))->getStart());
+        if((driverLocation.compare(tripStart)) &&((*(tripIt))->getStartTime() == time) && ((*(driverIt))->getAvailable())
+                && !((*(tripIt))->getHasDriver())){
             (*(tripIt))->setDriverId((*driverIt)->getId());
             //setting the driver of that trip as unavailable.
             (*(driverIt))->setAvailable(false);
@@ -85,7 +92,12 @@ void TaxiCenter::assignDrivers() {
             //setting the has driver field in trip info as true.
             (*(tripIt))->setHasDriver(true);
             //telling driver to calculate route to dst point.
-            (*(driverIt))->getTaxiCab()->navigate((*(tripIt))->getEnd());
+            pthread_t myThread;
+            int status1 = pthread_create(&myThread,NULL,&TaxiCenter::createRoute,(void*)(*(driverIt)));
+            if(status1) {
+                cout<<"ERROR! ";
+            }
+            pthread_join(myThread,NULL);
             driverIt++;
             tripIt++;
         }
@@ -183,20 +195,26 @@ void TaxiCenter::setTime(int time) {
 */
 
 
-TripInformation* TaxiCenter::checkTime() {
+void TaxiCenter::checkTime() {
     time += 1;
-    std::list<TripInformation*>::iterator tripIt = tripInformationList.begin();
-    while(tripIt != tripInformationList.end()){
-        if ((*(tripIt))->getStartTime() == time){
-            return (*(tripIt));
-        }
-        if (((*(tripIt))->getStartTime() < time) && ((*(tripIt))->getHasDriver()) && !((*(tripIt))->getRideIsOver())){
-            return (*(tripIt));
-        }
-        else{
-            return NULL;
-        }
-    }
+//    std::list<TripInformation*>::iterator tripIt = tripInformationList.begin();
+//    while(tripIt != tripInformationList.end()){
+//        if ((*(tripIt))->getStartTime() == time){
+//            return (*(tripIt));
+//        }
+//        if (((*(tripIt))->getStartTime() < time) && ((*(tripIt))->getHasDriver()) && !((*(tripIt))->getRideIsOver())){
+//            return (*(tripIt));
+//        }
+//        else{
+//            return NULL;
+//        }
+//    }
+}
+
+void *TaxiCenter::  createRoute(void *driver1) {
+    Driver* driver;
+    driver = (Driver*) driver1;
+    driver->getTaxiCab()->navigate(driver->getTripInformation()->getEnd());
 }
 
 

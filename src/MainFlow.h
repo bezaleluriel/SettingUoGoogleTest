@@ -15,8 +15,8 @@
  *
  */
 
-extern std::map<int, int> instructionsMap;
-extern std::map<int,int>::iterator mapIt;
+extern std::map<int, std::queue<int>> instructionsMap;
+
 
 class MainFlow {
 
@@ -95,7 +95,7 @@ public:
      * @return
      */
     //TODO - NEXT EXCERSICE WE WILL NEED TO RETURN A VECTOR AND LESARLEZ OTO.
-    TripInformation* changeTime();
+    void changeTime();
 
 };
 

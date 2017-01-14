@@ -1,15 +1,3 @@
-/// the instructions map need to be from int to queue.
-/// we will have a secondmap from int to tropinfo .
-///
-
-
-
-
-
-
-
-
-
 #include <iostream>
 #include "pthread.h"
 #include "unistd.h"
@@ -18,68 +6,171 @@
 #include "src/ThreadInfo.h"
 #include <netinet/in.h>
 #include "src/TaxiCenter.h"
-//declerations:
 
-//declerations:
-void* getNewClients(void* port);
-void* printClientName(void *clientSocketID);
+//DECLERATIONS:
+void* getNewClients(void* ThreadInfo);
+void* clientHandler(void* ThreadInfo);
 
 
 int main(int argc,char* argv[]) {
-    ///create map , obstacles
-    ///receive 1 and number ofclients.
-    ///use get new clients thread to create all threads.
+    int numOfObstacles;
+    int choice;
+    MainFlow mainFlow;
+    TaxiCenter* taxiCenter;
+    std::vector<std::string> addObstacles;
+    std::string obstacleLocation;
+    std::string size;
+    std::string numberOfDrivers;
+    std::string choiceInput;
 
-    pthread_t t1;
+    //receiving the size of the grid from the user.
+    std::getline(std::cin, size);
+    //giving the size to main flow for parsing.
+    mainFlow.parseSize(size);
+    //creating a grid with the size that was parsed by mainflowvec.
+    Grid grid(mainFlow.getMapX(),mainFlow.getMapY());
+    //setting the grid as the map of main flow.
+    mainFlow = MainFlow(&grid);
+    taxiCenter = mainFlow.getTaxiCenter();
+    //receiving the number of obstacles from the user.
+    std::cin >> numOfObstacles;
+    //setting the number of obstacles received from the user.
+    mainFlow.setNumOfObstacles(numOfObstacles);
+    //if there are obstacles we will get a string from the user representing their location.
+    if(numOfObstacles>0){
+        for(int i=0; i<numOfObstacles; i++){
+            std:: cin >> obstacleLocation;
+            mainFlow.setObstacle(obstacleLocation);
+            addObstacles.push_back(obstacleLocation);
+        }
+    }
 
-    int* port = new int(atoi(argv[1]));
-    int status = pthread_create(&t1,NULL,getNewClients,(void*)port);
-    pthread_join(t1,NULL);
+    //receiving first choice from option menu 1-6.
+    std::cin >> choice;
+    //we will now receive orders as an int continuously until we receive the number 7.
+    while (choice!=7){
+        //in case choice equals 1: we need to receive a number of drivers.
+        if(choice == 1){
+            //receiving a string representing the number of drivers expected.
+            std::cin >> numberOfDrivers;
 
-    ////create global map
+            //TEST
+             std::cout << "creating thread info class and creating main thread." <<std::endl;
+
+            //creating a threadinfo class to send to the main thread we will create.
+            ThreadInfo* threadInfo = new ThreadInfo(mainFlow ,atoi(argv[1]), NULL, stoi(numberOfDrivers), addObstacles);
+            pthread_t t1;
+            //creating a main thread that will create all other threads.
+            int status = pthread_create(&t1,NULL,getNewClients,(void*)threadInfo);
+            if(status) {
+                cout<<"ERROR! ";
+            }
+            pthread_join(t1,NULL);
+        }
+
+        //IN CASE CHOICE IS A NUMBER FROM 2-5:
+        if((choice > 1) && (choice < 6)){
+            std::cin >> choiceInput;
+            mainFlow.choiceMenu(choice, choiceInput);
+        }
+
+        //IN CASE CHOICE EQUALS 9 :
+        if(choice == 9){
+            //we increment the time by 1.
+            mainFlow.changeTime();
+            taxiCenter->assignDrivers();
+            std::list<TripInformation*>::iterator tripIt = taxiCenter->getTripInfoList()->begin();
+            while(tripIt != taxiCenter->getTripInfoList()->end()){
+                if ((*(tripIt))->getStartTime() == taxiCenter->getTime()){
+                    instructionsMap.find((*tripIt)->getDriverId())->second.push(1);
+                }
+                if (((*(tripIt))->getStartTime() < taxiCenter->getTime()) && ((*(tripIt))->getHasDriver()) && !((*(tripIt))->getRideIsOver())){
+                    instructionsMap.find((*tripIt)->getDriverId())->second.push(2);
+                }
+                tripIt++;
+            }
+        }
+        std::cin >> choice;
+    }
+
+    //in case the choice number is 7 we exit the program and notify client to exit as well.
+    std::map<int,std::queue<int>>::iterator instructionsIt = instructionsMap.begin();
+    //NOTIFYING ALL THREADS THAT PROGRAM SHOULD END.
+    while(instructionsIt != instructionsMap.end()){
+        (*(instructionsIt)).second.push(7);
+        instructionsIt++;
+    }
+
+    // IF THE NUMBER RECEIVED IS 7 WE EXIT.;
+    exit(0);
 
 }
 
 
+
+/**
+ *
+ * @param threadInfo
+ * @return
+ */
 //Main thread for receiving new client connections.
-void* getNewClients(void* port) {
-    ///only here the socket will be put in the threadinfo .
-    Socket *server = new Tcp(1, *(int*)port);
-    ///creates the actual socket , binds to a specific port and listens .....
+void* getNewClients(void* threadInformation) {
+    ThreadInfo* threadInfo;
+    threadInfo = (ThreadInfo*) threadInformation;
+    int port = threadInfo->getPort();
+    int numberOfDrivers = threadInfo->getNumberOfDrivers();
+
+    //only here the socket will be put in the thread info .
+    Socket *server = new Tcp(1, port);
+    //SETTING SOCKET IN PTHREAD FOR ALL SUB THREADS TO USE.
+    threadInfo->setSocket(server);
+    //creates the actual socket , binds to a specific port and listens .....
     server->initialize();
     int goodReception;
-//    cout << "Connection with " << server->getSocketDescriptor() << " established!" << endl;
-    for(int i=0;i<3;++i) {
-        ///only now we accept.
+
+    //TEST
+    std::cout << "Connection with " << server->getSocketDescriptor() << " established!" << std::endl;
+
+    for(int i=0;i<numberOfDrivers;++i) {
+        //only now we accept.
         goodReception= server->acceptClient();
         if (goodReception < 0) {
             //return an error represent error at this method
             cout << "Connection not established!" << endl;
         }else {
             pthread_t myThread;
-            int *sockID = new int(server->getSocketDescriptor());
-            int status = pthread_create(&myThread,NULL,printClientName,(void*)sockID);
+            //int *sockID = new int(server->getSocketDescriptor());
+            int status = pthread_create(&myThread,NULL,clientHandler,(void*)threadInfo);
             if(status) {
                 cout<<"ERROR! ";
             }
             pthread_join(myThread,NULL);
-            //cout << "Connection with " << server->getSocketDescriptor() << " established!" << endl;
+
+            //TEST
+            std::cout << "Connection with " << server->getSocketDescriptor() << " established!" << std::endl;
         }
     }
 }
 
-void* clientHandler(void *threadInfo) {
+
+/**
+ *
+ * @param threadInfo
+ * @return
+ */
+void* clientHandler(void *threadInformation) {
 
     char buffer[1024];
 
-    //we need to acknowlede taxi center and the port and the socket.(create new class).
-    ThreadInfo* p;
-    p = (ThreadInfo*) threadInfo;
-    MainFlow mainflow = p->getMainFlow();
-    Socket* socket = p->getSocket();
-    int port = p->getPort();
+    ThreadInfo* threadInfo;
+    threadInfo = (ThreadInfo*) threadInformation;
+    MainFlow mainFlow = threadInfo->getMainFlow();
+    TaxiCenter* taxiCenter = mainFlow.getTaxiCenter();
+    Socket* socket = threadInfo->getSocket();
+    int port = threadInfo->getPort();
+    std::vector<std::string> addObstacles = threadInfo->getAddObstacles();
 
-    //RECEIVE DRIVER AND VEHICLE ID.
+    //RECEIVING SERIALIZED DRIVER AND ADDING HIM TO TAXI CENTER.
     socket->reciveData(buffer, sizeof(buffer));
     string str1(buffer, sizeof(buffer));
     std::string driverInfo;
@@ -91,19 +182,39 @@ void* clientHandler(void *threadInfo) {
     std::cout << "the driver info string is:" <<driverInfo << std::endl;
 
     //CREATE DRIVER AND ADD IT TO TAXI CENTER - goes to option 5 in main flow menu - add a driver.
-    p->getMainFlow().choiceMenu(5,driverInfo);
+    mainFlow.choiceMenu(5,driverInfo);
     driverInfo.clear();
 
-    //SEND TAXI CAB
+    //SERIALIZING AND SENDING GRID SIZE AND OBSTACLES LOCATIONS.
+    std::string mapInfo;
+    mapInfo += std::to_string(mainFlow.getMapX());
+    mapInfo += ',';
+    mapInfo += std::to_string(mainFlow.getMapY());
+    while(!(addObstacles.empty())){
+        mapInfo += ',';
+        mapInfo += addObstacles.back();
+        addObstacles.pop_back();
+    }
+    std::string mapInfoSerialized;
+    boost::iostreams::back_insert_device<std::string> inserter2(mapInfoSerialized);
+    boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s2(inserter2);
+    boost::archive::binary_oarchive oa2(s2);
+    oa2 << mapInfo;
+    s2.flush();
+    socket->sendData(mapInfoSerialized);
+
+    //TEST
+    std:: cout << "just sent map info data: "<< mapInfo << std::endl;
+
+    //SERIALIZE AND SEND THE DRIVERS TAXI CAB.
     BeginningInfoReader beginningInfoReader;
     std::vector<std::string> driverVec;
     driverVec = beginningInfoReader.split(driverInfo);
     BaseCab* cab;
-    int driverId;
-    std::list<Driver*>::iterator driverIt = p->getMainFlow().getTaxiCenter()->getDriverList()->begin();
-    while(driverIt != p->getMainFlow().getTaxiCenter()->getDriverList()->end()){
-        if((*(driverIt))->getId() == stoi(driverVec[0])){
-            driverId = stoi(driverVec[0]);
+    int driverId = stoi(driverVec[0]);
+    std::list<Driver*>::iterator driverIt = taxiCenter->getDriverList()->begin();
+    while(driverIt != taxiCenter->getDriverList()->end()){
+        if((*(driverIt))->getId() == driverId){
             cab= (*(driverIt))->getTaxiCab();
             break;
         }
@@ -145,124 +256,122 @@ void* clientHandler(void *threadInfo) {
     s3.flush();
     socket->sendData(taxiInfoSerialized);
 
-    //INFINIT LOOP CHECKS WHAT THE MAP VALUE OF A SPECIFIC DRIVER ID IS AND TELLS HIM WHAT TO DO.
+    //INFINITE LOOP CHECKS WHAT THE MAP VALUE OF A SPECIFIC DRIVER ID IS AND TELLS HIM WHAT TO DO.
 
-    int choice = instructionsMap.find(driverId)->second;
-
-    //we will now receive orders as an int continuously until we receive the number 7.
-    while (choice!=7){
-        ///in case choice is a number from 2-5:
-        if((choice > 1) && (choice < 6)){
-            std::cin >> choiceInput;
-            mainFlow.choiceMenu(choice, choiceInput);
-        }
-
-        ///in case choice equals 9: attach trip informartion\movecabs.
-        if(choice == 9){
-
-            TripInformation* tripInformation = mainFlow.changeTime();
-            //   std::cout << "choice9 the time now is: " << mainFlow.getTaxiCenter()->getTime()<< std::endl;
-            Point currLocation = mainFlow.getTaxiCenter()->getDriverList()->front()->getLocation()->getPoint();
-            // std::cout << " and the location now is: " << currLocation << std::endl;
-            if((tripInformation != NULL  )){
-
-                mainFlow.getTaxiCenter()->assignDrivers();
-                ///in case we need to attach trip info to driver. represented by flag '1'.
-                if(tripInformation->getStartTime() == mainFlow.getTaxiCenter()->getTime()){
-                    //       std::cout << "flag1" << std::endl;
-                    std::string tripParts;
-                    int tripId = tripInformation->getRideId();
-                    int startX = tripInformation->getStart().getX();
-                    int startY = tripInformation->getStart().getY();
-                    int endX = tripInformation->getEnd().getX();
-                    int endY = tripInformation->getEnd().getY();
-                    int numOfPassengers = tripInformation->getNumberOfPassengers();
-                    double tariff = tripInformation->getTariff();
-                    int time = tripInformation->getStartTime();
-                    tripParts += '1';
-                    tripParts += ',';
-                    tripParts += boost::lexical_cast<std::string>(tripId);//to_string(tripId);
-                    tripParts += ',';
-                    tripParts += boost::lexical_cast<std::string>(startX);//to_string(startX);
-                    tripParts += ',';
-                    tripParts += boost::lexical_cast<std::string>(startY);//to_string(startY);
-                    tripParts += ',';
-                    tripParts += boost::lexical_cast<std::string>(endX);//to_string(endX);
-                    tripParts += ',';
-                    tripParts += boost::lexical_cast<std::string>(endY);//to_string(endY);
-                    tripParts += ',';
-                    tripParts += boost::lexical_cast<std::string>(numOfPassengers);//to_string(numOfPassengers);
-                    tripParts += ',';
-                    tripParts += boost::lexical_cast<std::string>(tariff);//to_string(tariff);
-                    tripParts += ',';
-                    tripParts += boost::lexical_cast<std::string>(time);//to_string(time);
-                    tripParts += ',';
-                    tripParts += boost::lexical_cast<std::string>(tripInformation->getDriverId());//to_string(tripInformation->getDriverId());
-
-
-                    ///sending trip info to client:
-                    std::string serial_str4;
-                    boost::iostreams::back_insert_device<std::string> inserter4(serial_str4);
-                    boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s4(inserter4);
-                    boost::archive::binary_oarchive oa4(s4);
-                    oa4 << tripParts;
-                    s4.flush();
-                    udp.sendData(serial_str4);
-                    tripParts.clear();
+    while(instructionsMap.find(driverId)->second.front() != 7){
+        //IF FLAG IN MAP FOR THIS SPECIFIC DRIVER IS 1 - ATTACH TRIP INFO
+        if(instructionsMap.find(driverId)->second.front() == 1){
+            //FINDING THIS DRIVER'S TRIP INFO IN THE LIST IN TAXI CENTER.
+            TripInformation* tripInformation;
+            driverIt = taxiCenter->getDriverList()->begin();
+            while(driverIt != taxiCenter->getDriverList()->end()){
+                if((*(driverIt))->getId() == driverId){
+                    tripInformation = (*(driverIt))->getTripInformation();
+                    break;
                 }
-
-                ///in case we give 'go' order. represented by flag '2'.
-                if(tripInformation->getStartTime() < mainFlow.getTaxiCenter()->getTime()){
-
-                    Point p = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
-                    //     std::cout << "before move" << p << std::endl;
-
-                    mainFlow.getTaxiCenter()->getTo();
-                    mainFlow.getTaxiCenter()->completeTrip();
-
-
-                    Point p2 = mainFlow.getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
-                    //   std::cout << "after move" << p2 << std::endl;
-
-                    std::string tripParts2;
-                    tripParts2 += '2';//flag
-                    tripParts2 += ',';
-                    tripParts2 += tripInformation->getDriverId();
-                    std::string serial_str5;
-                    boost::iostreams::back_insert_device<std::string> inserter5(serial_str5);
-                    boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s5(inserter5);
-                    boost::archive::binary_oarchive oa5(s5);
-                    oa5 << tripParts2;
-                    s5.flush();
-                    udp.sendData(serial_str5);
-                    tripParts2.clear();
+                else{
+                    driverIt++;
                 }
             }
+
+            //SEND THE TRIP INFO TO THE CLIENT.
+
+            //TEST
+            std::cout << "flag1" << std::endl;
+
+            std::string tripParts;
+            int tripId = tripInformation->getRideId();
+            int startX = tripInformation->getStart().getX();
+            int startY = tripInformation->getStart().getY();
+            int endX = tripInformation->getEnd().getX();
+            int endY = tripInformation->getEnd().getY();
+            int numOfPassengers = tripInformation->getNumberOfPassengers();
+            double tariff = tripInformation->getTariff();
+            int time = tripInformation->getStartTime();
+            tripParts += '1';
+            tripParts += ',';
+            tripParts += boost::lexical_cast<std::string>(tripId);//to_string(tripId);
+            tripParts += ',';
+            tripParts += boost::lexical_cast<std::string>(startX);//to_string(startX);
+            tripParts += ',';
+            tripParts += boost::lexical_cast<std::string>(startY);//to_string(startY);
+            tripParts += ',';
+            tripParts += boost::lexical_cast<std::string>(endX);//to_string(endX);
+            tripParts += ',';
+            tripParts += boost::lexical_cast<std::string>(endY);//to_string(endY);
+            tripParts += ',';
+            tripParts += boost::lexical_cast<std::string>(numOfPassengers);//to_string(numOfPassengers);
+            tripParts += ',';
+            tripParts += boost::lexical_cast<std::string>(tariff);//to_string(tariff);
+            tripParts += ',';
+            tripParts += boost::lexical_cast<std::string>(time);//to_string(time);
+            tripParts += ',';
+            tripParts += boost::lexical_cast<std::string>(tripInformation->getDriverId());//to_string(tripInformation->getDriverId());
+
+
+            ///sending trip info to client:
+            std::string serial_str4;
+            boost::iostreams::back_insert_device<std::string> inserter4(serial_str4);
+            boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s4(inserter4);
+            boost::archive::binary_oarchive oa4(s4);
+            oa4 << tripParts;
+            s4.flush();
+            socket->sendData(serial_str4);
+            tripParts.clear();
         }
-        std::cin >> choice;
+
+        //IN THIS CASE WE NEED TO TELL THE DRIVER TO MOVE.
+        if(instructionsMap.find(driverId)->second.front() == 2){
+
+            //TEST
+            Point location = taxiCenter->getTaxiList()->front()->getLocation()->getPoint();
+                 std::cout << "before move" << location << std::endl;
+
+            taxiCenter->getTo();
+            taxiCenter->completeTrip();
+
+            //TEST
+            Point location2 = threadInfo->getMainFlow().getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
+               std::cout << "after move" << location2 << std::endl;
+
+            TripInformation* tripInformation;
+            driverIt = taxiCenter->getDriverList()->begin();
+            while(driverIt != taxiCenter->getDriverList()->end()){
+                if((*(driverIt))->getId() == driverId){
+                    tripInformation = (*(driverIt))->getTripInformation();
+                    break;
+                }
+                else{
+                    driverIt++;
+                }
+            }
+
+            std::string tripParts2;
+            tripParts2 += '2';//flag
+            tripParts2 += ',';
+            tripParts2 += tripInformation->getDriverId();
+            std::string serial_str5;
+            boost::iostreams::back_insert_device<std::string> inserter5(serial_str5);
+            boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s5(inserter5);
+            boost::archive::binary_oarchive oa5(s5);
+            oa5 << tripParts2;
+            s5.flush();
+            socket->sendData(serial_str5);
+            tripParts2.clear();
+        }
     }
 
+    //IF THE NUMBER IN THE MAP FOR THIS DRIVER IS 7 WE NOTIFY THE CLIENT AND THE THREAD DIES.
+    std::string exitFlag;
+    exitFlag += '7';//flag
+    std::string serial_str6;
+    boost::iostreams::back_insert_device<std::string> inserter6(serial_str6);
+    boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s6(inserter6);
+    boost::archive::binary_oarchive oa6(s6);
+    oa6 << exitFlag;
+    s6.flush();
+    socket->sendData(serial_str6);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    int sockID = *(int*)clientSocketID;
-    cout << "The client " << sockID << " created fine! "<<endl;
 }
 
 

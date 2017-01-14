@@ -12,15 +12,25 @@
 
 class ThreadInfo {
 private:
-    MainFlow mainflow;
-    int port;
+    MainFlow mainFlow;
     Socket* socket;
+    int port;
+    int numberOfDrivers;
+    std::vector<std::string> addObstacles;
 
 public:
-    ThreadInfo(MainFlow mainflow, int port, Socket* socket);
+    ThreadInfo();
+    ThreadInfo(MainFlow mainFlow, int port, Socket* socket, int numberOfDrivers, std::vector<std::string> addObstacles);
     MainFlow &getMainFlow();
     int getPort();
     Socket* getSocket();
+    int getNumberOfDrivers() ;
+    void setMainflow( MainFlow &mainflow);
+    void setSocket(Socket *socket);
+    void setPort(int port);
+    void setNumberOfDrivers(int numberOfDrivers);
+    vector<string> &getAddObstacles();
+    void setAddObstacles(const vector<string> &addObstacles);
 };
 
 

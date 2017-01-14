@@ -121,7 +121,14 @@ public:
     /**
      *
      */
-    TripInformation* checkTime();
+    void checkTime();
+
+    /**
+     *
+     * @param driver1
+     * @return
+     */
+    void* createRoute(void* driver1);
 
 };
 
