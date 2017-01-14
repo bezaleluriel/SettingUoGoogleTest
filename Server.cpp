@@ -111,7 +111,7 @@ int main(int argc,char* argv[]) {
 /**
  *
  * @param threadInfo
- * @return hh
+ * @return hhh
  */
 //Main thread for receiving new client connections.
 void* getNewClients(void* threadInformation) {
