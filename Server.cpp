@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include "src/TaxiCenter.h"
 
-//DECLERATIONS:
+// DECLERATIONS:
 void* getNewClients(void* threadInformation);
 void* clientHandler(void* threadInformation);
 
@@ -85,7 +85,7 @@ int main(int argc,char* argv[]) {
             std::list<TripInformation*>::iterator tripIt = taxiCenter->getTripInfoList()->begin();
             while(tripIt != taxiCenter->getTripInfoList()->end()){
                 if ((*(tripIt))->getStartTime() == taxiCenter->getTime()){
-                    std::cout << " the driver id in main server is: "<< (*(tripIt))->getDriverId() << std::endl;
+                    //std::cout << " the driver id in main server is: "<< (*(tripIt))->getDriverId() << std::endl;
                     if(taxiCenter->getTripInfoList()->empty()){std::cout << "eeempty" << std::endl;}
                     if(taxiCenter->getDriverList()->empty()){std::cout << "empty" << std::endl;}
                     instructionsMap.find((*tripIt)->getDriverId())->second.push(1);

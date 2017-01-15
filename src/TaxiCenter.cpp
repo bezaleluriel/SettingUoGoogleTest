@@ -76,37 +76,67 @@ std::list<TripInformation *> *TaxiCenter::getTripInfoList(){
 }
 
 void TaxiCenter::assignDrivers() {
-    std::list<Driver*>::iterator driverIt = driversList.begin();
+    //std::list<Driver*>::iterator driverIt = driversList.begin();
     std::list<TripInformation*>::iterator tripIt = tripInformationList.begin();
-    while((driverIt != driversList.end()) && (tripIt != tripInformationList.end())){
-        //setting the driver id of first trip to be the first driver.
-        Point driverLocation((*(driverIt))->getLocation()->getPoint());
-        Point tripStart((*(tripIt))->getStart());
-        if((driverLocation.compare(tripStart)) &&((*(tripIt))->getStartTime() == time) && ((*(driverIt))->getAvailable())
-                && !((*(tripIt))->getHasDriver())){
-            (*(tripIt))->setDriverId((*driverIt)->getId());
-            //setting the driver of that trip as unavailable.
-            (*(driverIt))->setAvailable(false);
-            //setting the trip info of this trip as a member in the driver.
-            (*(driverIt))->setTripInformation((*(tripIt)));
-            //setting the has driver field in trip info as true.
-            (*(tripIt))->setHasDriver(true);
-            //telling driver to calculate route to dst point.
-            (*(driverIt))->getTaxiCab()->navigate((*(driverIt))->getTripInformation()->getEnd());
-//            pthread_t myThread;
-//            int status1 = pthread_create(&myThread, NULL,
-//                                         (void *(*)(void *)) &TaxiCenter::createRoute, ((void*)(*(driverIt))));
-//            if(status1) {
-//                cout<<"ERROR! ";
-//            }
-//            pthread_join(myThread,NULL);
-            driverIt++;
-            tripIt++;
+    while(tripIt != tripInformationList.end()){
+        std::list<Driver*>::iterator driverIt = driversList.begin();
+        while(driverIt != driversList.end()){
+            //setting the driver id of first trip to be the first driver.
+            Point driverLocation((*(driverIt))->getLocation()->getPoint());
+            Point tripStart((*(tripIt))->getStart());
+            if((driverLocation.compare(tripStart)) &&((*(tripIt))->getStartTime() == time) && ((*(driverIt))->getAvailable())
+               && !((*(tripIt))->getHasDriver())){
+                (*(tripIt))->setDriverId((*driverIt)->getId());
+                //setting the driver of that trip as unavailable.
+                (*(driverIt))->setAvailable(false);
+                //setting the trip info of this trip as a member in the driver.
+                (*(driverIt))->setTripInformation((*(tripIt)));
+                //setting the has driver field in trip info as true.
+                (*(tripIt))->setHasDriver(true);
+                //telling driver to calculate route to dst point.
+                (*(driverIt))->getTaxiCab()->navigate((*(driverIt))->getTripInformation()->getEnd());
+                break;
+            }
+            else{
+                driverIt++;
+            }
         }
-        else{
-            driverIt++;
-        }
+        tripIt++;
     }
+
+
+
+
+
+//    while((driverIt != driversList.end()) && (tripIt != tripInformationList.end())){
+//        //setting the driver id of first trip to be the first driver.
+//        Point driverLocation((*(driverIt))->getLocation()->getPoint());
+//        Point tripStart((*(tripIt))->getStart());
+//        if((driverLocation.compare(tripStart)) &&((*(tripIt))->getStartTime() == time) && ((*(driverIt))->getAvailable())
+//                && !((*(tripIt))->getHasDriver())){
+//            (*(tripIt))->setDriverId((*driverIt)->getId());
+//            //setting the driver of that trip as unavailable.
+//            (*(driverIt))->setAvailable(false);
+//            //setting the trip info of this trip as a member in the driver.
+//            (*(driverIt))->setTripInformation((*(tripIt)));
+//            //setting the has driver field in trip info as true.
+//            (*(tripIt))->setHasDriver(true);
+//            //telling driver to calculate route to dst point.
+//            (*(driverIt))->getTaxiCab()->navigate((*(driverIt))->getTripInformation()->getEnd());
+////            pthread_t myThread;
+////            int status1 = pthread_create(&myThread, NULL,
+////                                         (void *(*)(void *)) &TaxiCenter::createRoute, ((void*)(*(driverIt))));
+////            if(status1) {
+////                cout<<"ERROR! ";
+////            }
+////            pthread_join(myThread,NULL);
+//            driverIt++;
+//            tripIt++;
+//        }
+//        else{
+//            driverIt++;
+//        }
+//    }
 }
 
 void TaxiCenter::getTo() {
@@ -132,6 +162,7 @@ void TaxiCenter::completeTrip() {
             ((*(driverIt))->getTripInformation()->getEnd().compare((*(driverIt))->getLocation()->getPoint()))) {
             (*(driverIt))->getTripInformation()->setRideIsOver(true);
             (*(driverIt))->setAvailable(true);
+            (*(driverIt))->setTripInformation(NULL);
             driverIt++;
         }
         else{
