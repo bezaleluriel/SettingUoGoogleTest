@@ -277,6 +277,7 @@ void* clientHandler(void *threadInformation) {
 
         //IF FLAG IN MAP FOR THIS SPECIFIC DRIVER IS 1 - ATTACH TRIP INFO
         if(instructionsMap.find(driverId)->second.front() == 1){
+            instructionsMap.find(driverId)->second.pop();
             //FINDING THIS DRIVER'S TRIP INFO IN THE LIST IN TAXI CENTER.
             TripInformation* tripInformation;
             driverIt = taxiCenter->getDriverList()->begin();
@@ -339,6 +340,8 @@ void* clientHandler(void *threadInformation) {
 
         //IN THIS CASE WE NEED TO TELL THE DRIVER TO MOVE.
         if(instructionsMap.find(driverId)->second.front() == 2){
+
+            instructionsMap.find(driverId)->second.pop();
 
             //TEST
             Point location = taxiCenter->getTaxiList()->front()->getLocation()->getPoint();
