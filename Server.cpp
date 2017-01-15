@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include "src/TaxiCenter.h"
 
-//DECLERATIONS:nbnb
+//DECLERATIONS:
 void* getNewClients(void* threadInformation);
 void* clientHandler(void* threadInformation);
 
@@ -61,7 +61,7 @@ int main(int argc,char* argv[]) {
 
             //creating a threadinfo class to send to the main thread we will create.
             ThreadInfo* threadInfo;
-            threadInfo = new ThreadInfo(mainFlow ,atoi(argv[1]), stoi(numberOfDrivers), addObstacles);
+            threadInfo = new ThreadInfo(&mainFlow ,atoi(argv[1]), stoi(numberOfDrivers), addObstacles);
 
             //creating a main thread that will create all other threads.
             int status = pthread_create(&t1,NULL,getNewClients,(void*)threadInfo);
@@ -85,6 +85,10 @@ int main(int argc,char* argv[]) {
             std::list<TripInformation*>::iterator tripIt = taxiCenter->getTripInfoList()->begin();
             while(tripIt != taxiCenter->getTripInfoList()->end()){
                 if ((*(tripIt))->getStartTime() == taxiCenter->getTime()){
+                    //std::cout << " the driver id in main server is: "<< (*(tripIt))->getDriverId() << std::endl;
+                    if(taxiCenter->getTripInfoList()->empty()){std::cout << "eeempty" << std::endl;}
+                    if(taxiCenter->getDriverList()->empty()){std::cout << "empty" << std::endl;}
+                    //std::cout << "driver id in driver list: " << taxiCenter->getDriverList()->front()->getId() << std::endl;
                     instructionsMap.find((*tripIt)->getDriverId())->second.push(1);
                 }
                 if (((*(tripIt))->getStartTime() < taxiCenter->getTime()) && ((*(tripIt))->getHasDriver()) && !((*(tripIt))->getRideIsOver())){
@@ -96,7 +100,7 @@ int main(int argc,char* argv[]) {
         std::cin >> choice;
     }
 
-    pthread_join(t1,NULL);
+
     //in case the choice number is 7 we exit the program and notify client to exit as well.
     std::map<int,std::queue<int>>::iterator instructionsIt = instructionsMap.begin();
     //NOTIFYING ALL THREADS THAT PROGRAM SHOULD END.
@@ -105,6 +109,7 @@ int main(int argc,char* argv[]) {
         instructionsIt++;
     }
 
+    pthread_join(t1,NULL);
     // IF THE NUMBER RECEIVED IS 7 WE EXIT.;
     exit(0);
 
@@ -167,8 +172,8 @@ void* clientHandler(void *threadInformation) {
 
     ThreadInfo* threadInfo;
     threadInfo = (ThreadInfo*) threadInformation;
-    MainFlow mainFlow = threadInfo->getMainFlow();
-    TaxiCenter* taxiCenter = mainFlow.getTaxiCenter();
+    MainFlow* mainFlow = threadInfo->getMainFlow();
+    TaxiCenter* taxiCenter = mainFlow->getTaxiCenter();
     Socket* socket = threadInfo->getSocket();
     int port = threadInfo->getPort();
     std::vector<std::string> addObstacles = threadInfo->getAddObstacles();
@@ -186,13 +191,13 @@ void* clientHandler(void *threadInformation) {
     std::cout << "the driver info string is:" <<driverInfo << std::endl;
 
     //CREATE DRIVER AND ADD IT TO TAXI CENTER - goes to option 5 in main flow menu - add a driver.
-    mainFlow.choiceMenu(5,driverInfo);
+    mainFlow->choiceMenu(5,driverInfo);
 
     //SERIALIZING AND SENDING GRID SIZE AND OBSTACLES LOCATIONS.
     std::string mapInfo;
-    mapInfo += std::to_string(mainFlow.getMapX());
+    mapInfo += std::to_string(mainFlow->getMapX());
     mapInfo += ',';
-    mapInfo += std::to_string(mainFlow.getMapY());
+    mapInfo += std::to_string(mainFlow->getMapY());
     while(!(addObstacles.empty())){
         mapInfo += ',';
         mapInfo += addObstacles.back();
@@ -265,6 +270,7 @@ void* clientHandler(void *threadInformation) {
 
     //INFINITE LOOP CHECKS WHAT THE MAP VALUE OF A SPECIFIC DRIVER ID IS AND TELLS HIM WHAT TO DO.
     int blabla2 = instructionsMap.find(driverId)->second.front();
+    std:cout << "the driver id in the inifinite loop is: " << taxiCenter->getDriverList()->front()->getId() << std::endl;
     std::cout << blabla2 << std::endl;
 
 
@@ -343,7 +349,7 @@ void* clientHandler(void *threadInformation) {
             taxiCenter->completeTrip();
 
             //TEST
-            Point location2 = threadInfo->getMainFlow().getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
+            Point location2 = threadInfo->getMainFlow()->getTaxiCenter()->getTaxiList()->front()->getLocation()->getPoint();
                std::cout << "after move" << location2 << std::endl;
 
             TripInformation* tripInformation;
