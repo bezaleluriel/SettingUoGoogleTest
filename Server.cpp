@@ -85,10 +85,9 @@ int main(int argc,char* argv[]) {
             std::list<TripInformation*>::iterator tripIt = taxiCenter->getTripInfoList()->begin();
             while(tripIt != taxiCenter->getTripInfoList()->end()){
                 if ((*(tripIt))->getStartTime() == taxiCenter->getTime()){
-                    //std::cout << " the driver id in main server is: "<< (*(tripIt))->getDriverId() << std::endl;
+                    std::cout << " the driver id in main server is: "<< (*(tripIt))->getDriverId() << std::endl;
                     if(taxiCenter->getTripInfoList()->empty()){std::cout << "eeempty" << std::endl;}
                     if(taxiCenter->getDriverList()->empty()){std::cout << "empty" << std::endl;}
-                    //std::cout << "driver id in driver list: " << taxiCenter->getDriverList()->front()->getId() << std::endl;
                     instructionsMap.find((*tripIt)->getDriverId())->second.push(1);
                 }
                 if (((*(tripIt))->getStartTime() < taxiCenter->getTime()) && ((*(tripIt))->getHasDriver()) && !((*(tripIt))->getRideIsOver())){
