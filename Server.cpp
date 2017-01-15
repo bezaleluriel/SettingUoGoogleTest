@@ -22,6 +22,7 @@ int main(int argc,char* argv[]) {
     std::string size;
     std::string numberOfDrivers;
     std::string choiceInput;
+    pthread_t t1;
 
     //receiving the size of the grid from the user.
     std::getline(std::cin, size);
@@ -61,13 +62,13 @@ int main(int argc,char* argv[]) {
             //creating a threadinfo class to send to the main thread we will create.
             ThreadInfo* threadInfo;
             threadInfo = new ThreadInfo(mainFlow ,atoi(argv[1]), stoi(numberOfDrivers), addObstacles);
-            pthread_t t1;
+//            pthread_t t1;
             //creating a main thread that will create all other threads.
             int status = pthread_create(&t1,NULL,getNewClients,(void*)threadInfo);
             if(status) {
                 cout<<"ERROR! ";
             }
-            pthread_join(t1,NULL);
+            //pthread_join(t1,NULL);
         }
 
         //IN CASE CHOICE IS A NUMBER FROM 2-5:
@@ -94,6 +95,8 @@ int main(int argc,char* argv[]) {
         }
         std::cin >> choice;
     }
+
+    pthread_join(t1,NULL);
 
     //in case the choice number is 7 we exit the program and notify client to exit as well.
     std::map<int,std::queue<int>>::iterator instructionsIt = instructionsMap.begin();
@@ -262,10 +265,14 @@ void* clientHandler(void *threadInformation) {
     usleep(1);
 
     //INFINITE LOOP CHECKS WHAT THE MAP VALUE OF A SPECIFIC DRIVER ID IS AND TELLS HIM WHAT TO DO.
+    std::cout << "entering infinite loop" << std::endl;
+
+    std::cout << instructionsMap.find(driverId)->second.front() << std::endl;
 
     while(instructionsMap.find(driverId)->second.front() != 7){
         //IF FLAG IN MAP FOR THIS SPECIFIC DRIVER IS 1 - ATTACH TRIP INFO
         if(instructionsMap.find(driverId)->second.front() == 1){
+            std::cout << "flag 1" << std::endl;
             //FINDING THIS DRIVER'S TRIP INFO IN THE LIST IN TAXI CENTER.
             TripInformation* tripInformation;
             driverIt = taxiCenter->getDriverList()->begin();
