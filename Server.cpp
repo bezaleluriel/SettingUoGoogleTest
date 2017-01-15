@@ -8,8 +8,8 @@
 #include "src/TaxiCenter.h"
 
 //DECLERATIONS:
-void* getNewClients(void* ThreadInfo);
-void* clientHandler(void* ThreadInfo);
+void* getNewClients(void* threadInformation);
+void* clientHandler(void* threadInformation);
 
 
 int main(int argc,char* argv[]) {
@@ -31,6 +31,7 @@ int main(int argc,char* argv[]) {
     Grid grid(mainFlow.getMapX(),mainFlow.getMapY());
     //setting the grid as the map of main flow.
     mainFlow = MainFlow(&grid);
+    mainFlow.parseSize(size);
     taxiCenter = mainFlow.getTaxiCenter();
     //receiving the number of obstacles from the user.
     std::cin >> numOfObstacles;
@@ -58,7 +59,8 @@ int main(int argc,char* argv[]) {
              std::cout << "creating thread info class and creating main thread." <<std::endl;
 
             //creating a threadinfo class to send to the main thread we will create.
-            ThreadInfo* threadInfo = new ThreadInfo(mainFlow ,atoi(argv[1]), NULL, stoi(numberOfDrivers), addObstacles);
+            ThreadInfo* threadInfo;
+            threadInfo = new ThreadInfo(mainFlow ,atoi(argv[1]), stoi(numberOfDrivers), addObstacles);
             pthread_t t1;
             //creating a main thread that will create all other threads.
             int status = pthread_create(&t1,NULL,getNewClients,(void*)threadInfo);
@@ -159,7 +161,6 @@ void* getNewClients(void* threadInformation) {
  * @return
  */
 void* clientHandler(void *threadInformation) {
-
     char buffer[1024];
 
     ThreadInfo* threadInfo;
@@ -172,6 +173,7 @@ void* clientHandler(void *threadInformation) {
 
     //RECEIVING SERIALIZED DRIVER AND ADDING HIM TO TAXI CENTER.
     socket->reciveData(buffer, sizeof(buffer));
+    usleep(1);
     string str1(buffer, sizeof(buffer));
     std::string driverInfo;
     boost::iostreams::basic_array_source<char> device1(str1.c_str(), str1.size());
@@ -183,7 +185,6 @@ void* clientHandler(void *threadInformation) {
 
     //CREATE DRIVER AND ADD IT TO TAXI CENTER - goes to option 5 in main flow menu - add a driver.
     mainFlow.choiceMenu(5,driverInfo);
-    driverInfo.clear();
 
     //SERIALIZING AND SENDING GRID SIZE AND OBSTACLES LOCATIONS.
     std::string mapInfo;
@@ -202,6 +203,7 @@ void* clientHandler(void *threadInformation) {
     oa2 << mapInfo;
     s2.flush();
     socket->sendData(mapInfoSerialized);
+    usleep(1);
 
     //TEST
     std:: cout << "just sent map info data: "<< mapInfo << std::endl;
@@ -209,6 +211,7 @@ void* clientHandler(void *threadInformation) {
     //SERIALIZE AND SEND THE DRIVERS TAXI CAB.
     BeginningInfoReader beginningInfoReader;
     std::vector<std::string> driverVec;
+    std::cout << "splitting driver info: " << driverInfo << std::endl;
     driverVec = beginningInfoReader.split(driverInfo);
     BaseCab* cab;
     int driverId = stoi(driverVec[0]);
@@ -254,7 +257,9 @@ void* clientHandler(void *threadInformation) {
     boost::archive::binary_oarchive oa3(s3);
     oa3 << taxiInfo;
     s3.flush();
+    std::cout << "sending taxi info: " << taxiInfo << std::endl;
     socket->sendData(taxiInfoSerialized);
+    usleep(1);
 
     //INFINITE LOOP CHECKS WHAT THE MAP VALUE OF A SPECIFIC DRIVER ID IS AND TELLS HIM WHAT TO DO.
 
@@ -317,6 +322,7 @@ void* clientHandler(void *threadInformation) {
             oa4 << tripParts;
             s4.flush();
             socket->sendData(serial_str4);
+            sleep(1);
             tripParts.clear();
         }
 
@@ -357,6 +363,7 @@ void* clientHandler(void *threadInformation) {
             oa5 << tripParts2;
             s5.flush();
             socket->sendData(serial_str5);
+            sleep(1);
             tripParts2.clear();
         }
     }
@@ -371,6 +378,7 @@ void* clientHandler(void *threadInformation) {
     oa6 << exitFlag;
     s6.flush();
     socket->sendData(serial_str6);
+    sleep(1);
 
 }
 

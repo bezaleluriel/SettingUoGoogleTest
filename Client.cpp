@@ -7,7 +7,7 @@
 #include "src/LuxuryCab.h"
 
 //DECLERATIONS
-void* createRoute(void* driver1);
+//void* createRoute(void* driver1);
 
 //MAIN
 int main(int argc, char *argv[])  {
@@ -51,8 +51,8 @@ int main(int argc, char *argv[])  {
     boost::archive::binary_oarchive oa1(s1);
     oa1 << info;
     s1.flush();
-    sleep(1);
     client->sendData(serial_str1);
+    usleep(1);
 
     //TEST
     std::cout << "send driver info: " << info <<std::endl;
@@ -60,6 +60,7 @@ int main(int argc, char *argv[])  {
 
     //RECEIVING SERIALIZE MAP INFO.
     client->reciveData(buffer, sizeof(buffer));
+    usleep(1);
     string str2(buffer, sizeof(buffer));
     std::string mapInfo;
     boost::iostreams::basic_array_source<char> device2(str2.c_str(), str2.size());
@@ -81,7 +82,10 @@ int main(int argc, char *argv[])  {
     std::cout << "received the map info serialization: "<< mapInfo <<std::endl;
 
     //RECEIVING SERIALIZED TAXI CAB.
+    std::cout << "about to receive a serialized taxi cab "<< std::endl;
     client->reciveData(buffer, sizeof(buffer));
+    usleep(1);
+    std::cout << "after receive data "<< std::endl;
 
     string str3(buffer, sizeof(buffer));
     std::string taxiInfo;
@@ -92,7 +96,7 @@ int main(int argc, char *argv[])  {
     std::vector<std::string> vec2 = beginningInfoReader.split(taxiInfo);
 
     //TEST
-    std::cout << "received a seriaized taxi cab"<< taxiInfo<< std::endl;
+    std::cout << "received a seriaized taxi cab: "<< taxiInfo<< std::endl;
 
     int cabId = atoi(vec2[0].c_str());
     int taxiType = atoi(vec2[1].c_str());
@@ -146,6 +150,7 @@ int main(int argc, char *argv[])  {
     std::string choice = "0";
     while( atoi(choice.c_str()) != 7){
         client->reciveData(buffer, sizeof(buffer));
+        sleep(1);
         //DESERIALIZATION OF TRIP INFO.
         string str4(buffer, sizeof(buffer));
         boost::iostreams::basic_array_source<char> device4(str4.c_str(), str4.size());
@@ -185,12 +190,13 @@ int main(int argc, char *argv[])  {
                     (*(driverIt))->setTripInformation(tripInfo);
                     (*(driverIt))->setAvailable(false);
                     tripInfo->setHasDriver(true);
-                    pthread_t myThread;
-                    int status1 = pthread_create(&myThread,NULL,createRoute,(void*)(*(driverIt)));
-                    if(status1) {
-                        cout<<"ERROR! ";
-                    }
-                    pthread_join(myThread,NULL);
+                    driver->getTaxiCab()->navigate(driver->getTripInformation()->getEnd());
+//                    pthread_t myThread;
+//                    int status1 = pthread_create(&myThread,NULL,createRoute,(void*)(*(driverIt)));
+//                    if(status1) {
+//                        cout<<"ERROR! ";
+//                    }
+//                    pthread_join(myThread,NULL);
                     driverIt++;
                     break;
                 }
@@ -287,9 +293,9 @@ int main(int argc, char *argv[])  {
 
 }
 
-void* createRoute(void* driver1){
-    Driver* driver;
-    driver = (Driver*) driver1;
-    driver->getTaxiCab()->navigate(driver->getTripInformation()->getEnd());
-
-}
+//void* createRoute(void* driver1){
+//    Driver* driver;
+//    driver = (Driver*) driver1;
+//    driver->getTaxiCab()->navigate(driver->getTripInformation()->getEnd());
+//
+//}

@@ -20,7 +20,7 @@ private:
 
 public:
     ThreadInfo();
-    ThreadInfo(MainFlow &mainFlow, int port, Socket* socket, int numberOfDrivers, std::vector<std::string> addObstacles);
+    ThreadInfo(MainFlow &mainFlow, int port, int numberOfDrivers, std::vector<std::string> addObstacles);
     MainFlow &getMainFlow();
     int getPort();
     Socket* getSocket();

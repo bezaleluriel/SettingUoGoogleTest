@@ -92,13 +92,14 @@ void TaxiCenter::assignDrivers() {
             //setting the has driver field in trip info as true.
             (*(tripIt))->setHasDriver(true);
             //telling driver to calculate route to dst point.
-            pthread_t myThread;
-            int status1 = pthread_create(&myThread, NULL,
-                                         (void *(*)(void *)) &TaxiCenter::createRoute, ((void*)(*(driverIt))));
-            if(status1) {
-                cout<<"ERROR! ";
-            }
-            pthread_join(myThread,NULL);
+            (*(driverIt))->getTaxiCab()->navigate((*(driverIt))->getTripInformation()->getEnd());
+//            pthread_t myThread;
+//            int status1 = pthread_create(&myThread, NULL,
+//                                         (void *(*)(void *)) &TaxiCenter::createRoute, ((void*)(*(driverIt))));
+//            if(status1) {
+//                cout<<"ERROR! ";
+//            }
+//            pthread_join(myThread,NULL);
             driverIt++;
             tripIt++;
         }
@@ -212,10 +213,10 @@ void TaxiCenter::checkTime() {
 //    }
 }
 
-void *TaxiCenter::  createRoute(void *driver1) {
-    Driver* driver;
-    driver = (Driver*) driver1;
-    driver->getTaxiCab()->navigate(driver->getTripInformation()->getEnd());
-}
+//void *TaxiCenter::  createRoute(void *driver1) {
+//    Driver* driver;
+//    driver = (Driver*) driver1;
+//    driver->getTaxiCab()->navigate(driver->getTripInformation()->getEnd());
+//}
 
 
