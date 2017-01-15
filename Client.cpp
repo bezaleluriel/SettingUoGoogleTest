@@ -34,7 +34,7 @@ int main(int argc, char *argv[])  {
     //TEST
      std::cout << "driver crated and pushed in list" <<std::endl;
     //todo replace the Socket with Tcp and setIp
-    Socket* client = new Tcp(0, atoi(argv[1]));
+    Socket* client = new Tcp(0, atoi(argv[2]));
     client->initialize();
 
 
@@ -51,6 +51,7 @@ int main(int argc, char *argv[])  {
     boost::archive::binary_oarchive oa1(s1);
     oa1 << info;
     s1.flush();
+    sleep(1);
     client->sendData(serial_str1);
 
     //TEST

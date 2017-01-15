@@ -93,7 +93,8 @@ void TaxiCenter::assignDrivers() {
             (*(tripIt))->setHasDriver(true);
             //telling driver to calculate route to dst point.
             pthread_t myThread;
-            int status1 = pthread_create(&myThread,NULL,&TaxiCenter::createRoute,(void*)(*(driverIt)));
+            int status1 = pthread_create(&myThread, NULL,
+                                         (void *(*)(void *)) &TaxiCenter::createRoute, ((void*)(*(driverIt))));
             if(status1) {
                 cout<<"ERROR! ";
             }

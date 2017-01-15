@@ -6,7 +6,7 @@
 
 ThreadInfo::ThreadInfo() {}
 
-ThreadInfo::ThreadInfo(MainFlow mainFlow, int port, Socket* socket, int numberOfDrivers, std::vector<std::string> addObstacles) {
+ThreadInfo::ThreadInfo(MainFlow &mainFlow, int port, Socket* socket, int numberOfDrivers, std::vector<std::string> addObstacles) {
     ThreadInfo::addObstacles = addObstacles;
     ThreadInfo::mainFlow = mainFlow;
     ThreadInfo::port = port;

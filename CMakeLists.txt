@@ -24,9 +24,10 @@ set(SOURCE_FILES src/sockets/Socket.cpp src/sockets/Socket.h src/sockets/Tcp.cpp
         src/MainFlow.cpp src/MainFlow.h
         Tests/PassengerTest.cpp Tests/TaxiCenterTest.cpp Tests/TripInformationTest.cpp
         Tests/StandartCabTest.cpp src/BaseCab.cpp src/BaseCab.h Tests/LaxuryCabTest.cpp
+        src/ThreadInfo.cpp src/ThreadInfo.h
         )
 
-add_executable(Client ${SOURCE_FILES} Client.cpp src/ThreadInfo.cpp src/ThreadInfo.h)
+add_executable(Client ${SOURCE_FILES} Client.cpp)
         target_link_libraries(Client gtest gtest_main)
 
 add_executable(Server ${SOURCE_FILES} Server.cpp)
