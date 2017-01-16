@@ -132,6 +132,7 @@ void TaxiCenter::completeTrip() {
             ((*(driverIt))->getTripInformation()->getEnd().compare((*(driverIt))->getLocation()->getPoint()))) {
             (*(driverIt))->getTripInformation()->setRideIsOver(true);
             (*(driverIt))->setAvailable(true);
+           // (*(driverIt))->setTripInformation(NULL);
             driverIt++;
         }
         else{

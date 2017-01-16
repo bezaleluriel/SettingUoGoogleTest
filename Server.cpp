@@ -72,13 +72,13 @@ int main(int argc,char* argv[]) {
         }
 
         //IN CASE CHOICE IS A NUMBER FROM 2-5:
-        if((choice > 1) && (choice < 6)){
+       else if((choice > 1) && (choice < 6)){
             std::cin >> choiceInput;
             mainFlow.choiceMenu(choice, choiceInput);
         }
 
         //IN CASE CHOICE EQUALS 9 :
-        if(choice == 9){
+       else if(choice == 9){
             //we increment the time by 1.
             mainFlow.changeTime();
             taxiCenter->assignDrivers();
@@ -99,7 +99,7 @@ int main(int argc,char* argv[]) {
         std::cin >> choice;
     }
 
-
+    pthread_join(t1,NULL);
     //in case the choice number is 7 we exit the program and notify client to exit as well.
     std::map<int,std::queue<int>>::iterator instructionsIt = instructionsMap.begin();
     //NOTIFYING ALL THREADS THAT PROGRAM SHOULD END.
@@ -108,7 +108,7 @@ int main(int argc,char* argv[]) {
         instructionsIt++;
     }
 
-    pthread_join(t1,NULL);
+   // pthread_join(t1,NULL);
     // IF THE NUMBER RECEIVED IS 7 WE EXIT.;
     exit(0);
 
@@ -275,6 +275,11 @@ void* clientHandler(void *threadInformation) {
 
     while(instructionsMap.find(driverId)->second.front() != 7){
 
+//        if (instructionsMap.find(driverId)->second.front() == 0){
+//            mainFlow.choiceMenu(5,driverInfo);
+//        };
+
+
         //IF FLAG IN MAP FOR THIS SPECIFIC DRIVER IS 1 - ATTACH TRIP INFO
         if(instructionsMap.find(driverId)->second.front() == 1){
             instructionsMap.find(driverId)->second.pop();
@@ -395,58 +400,6 @@ void* clientHandler(void *threadInformation) {
     sleep(1);
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
