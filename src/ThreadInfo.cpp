@@ -11,6 +11,7 @@ ThreadInfo::ThreadInfo(MainFlow *mainFlow, int port, int numberOfDrivers, std::v
     ThreadInfo::mainFlow = mainFlow;
     ThreadInfo::port = port;
     ThreadInfo::numberOfDrivers = numberOfDrivers;
+    ThreadInfo::socketNumber = socketNumber;
 }
 
 MainFlow* ThreadInfo::getMainFlow() {
@@ -51,6 +52,14 @@ vector<string> &ThreadInfo::getAddObstacles()  {
 
 void ThreadInfo::setAddObstacles(const vector<string> &addObstacles) {
     ThreadInfo::addObstacles = addObstacles;
+}
+
+int ThreadInfo::getSocketNumber()  {
+    return socketNumber;
+}
+
+void ThreadInfo::setSocketNumber(int socketNumber) {
+    ThreadInfo::socketNumber = socketNumber;
 }
 
 

@@ -17,6 +17,7 @@ private:
     int port;
     int numberOfDrivers;
     std::vector<std::string> addObstacles;
+    int socketNumber;
 
 public:
     ThreadInfo();
@@ -31,6 +32,8 @@ public:
     void setNumberOfDrivers(int numberOfDrivers);
     vector<string> &getAddObstacles();
     void setAddObstacles(const vector<string> &addObstacles);
+    int getSocketNumber() ;
+    void setSocketNumber(int socketNumber);
 };
 
 

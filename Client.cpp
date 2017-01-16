@@ -17,6 +17,7 @@ int main(int argc, char *argv[])  {
     BeginningInfoReader beginningInfoReader;
     Structure* map ;
     char buffer[1024];
+    int dummy = 0;
 
     //RECEIVING INFO FOR DRIVER FROM TERMINAL AND CREATING A DRIVER.
     std::string info;
@@ -33,7 +34,6 @@ int main(int argc, char *argv[])  {
 
     //TEST
      std::cout << "driver crated and pushed in list" <<std::endl;
-    //todo replace the Socket with Tcp and setIp
     Socket* client = new Tcp(0, atoi(argv[2]));
     client->initialize();
 
@@ -51,14 +51,14 @@ int main(int argc, char *argv[])  {
     boost::archive::binary_oarchive oa1(s1);
     oa1 << info;
     s1.flush();
-    client->sendData(serial_str1);
+    client->sendData(serial_str1,dummy);
 
     //TEST
     std::cout << "send driver info: " << info <<std::endl;
 
 
     //RECEIVING SERIALIZE MAP INFO.
-    client->reciveData(buffer, sizeof(buffer));
+    client->reciveData(buffer, sizeof(buffer), dummy);
     string str2(buffer, sizeof(buffer));
     std::string mapInfo;
     boost::iostreams::basic_array_source<char> device2(str2.c_str(), str2.size());
@@ -87,11 +87,11 @@ int main(int argc, char *argv[])  {
     boost::archive::binary_oarchive oa9(s9);
     oa9 << fake9;
     s9.flush();
-    client->sendData(serial_str9);
+    client->sendData(serial_str9, dummy);
 
     //RECEIVING SERIALIZED TAXI CAB.
     std::cout << "about to receive a serialized taxi cab "<< std::endl;
-    client->reciveData(buffer, sizeof(buffer));
+    client->reciveData(buffer, sizeof(buffer), dummy);
     std::cout << "after receive data "<< std::endl;
 
     string str3(buffer, sizeof(buffer));
@@ -165,9 +165,9 @@ int main(int argc, char *argv[])  {
         boost::archive::binary_oarchive oa8(s8);
         oa8 << fake8;
         s8.flush();
-        client->sendData(serial_str8);
+        client->sendData(serial_str8, dummy);
 
-        client->reciveData(buffer, sizeof(buffer));
+        client->reciveData(buffer, sizeof(buffer), dummy);
         //DESERIALIZATION OF TRIP INFO.
         string str4(buffer, sizeof(buffer));
         boost::iostreams::basic_array_source<char> device4(str4.c_str(), str4.size());

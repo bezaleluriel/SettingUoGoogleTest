@@ -6,6 +6,7 @@
 #include "src/ThreadInfo.h"
 #include <netinet/in.h>
 #include "src/TaxiCenter.h"
+#include <mutex>
 
 // DECLERATIONS:
 void* getNewClients(void* threadInformation);
@@ -23,6 +24,7 @@ int main(int argc,char* argv[]) {
     std::string numberOfDrivers;
     std::string choiceInput;
     pthread_t t1;
+    pthread_mutex_t lock;
 
     //receiving the size of the grid from the user.
     std::getline(std::cin, size);
@@ -62,7 +64,9 @@ int main(int argc,char* argv[]) {
             //creating a threadinfo class to send to the main thread we will create.
             ThreadInfo* threadInfo;
             threadInfo = new ThreadInfo(&mainFlow ,atoi(argv[1]), stoi(numberOfDrivers), addObstacles);
-
+            if(pthread_mutex_init(&lock,NULL) != 0){
+                std::cout << "error with mutex" << std::endl;
+            }
             //creating a main thread that will create all other threads.
             int status = pthread_create(&t1,NULL,getNewClients,(void*)threadInfo);
             if(status) {
@@ -136,15 +140,14 @@ void* getNewClients(void* threadInformation) {
     threadInfo->setSocket(server);
     //creates the actual socket , binds to a specific port and listens .....
     server->initialize();
-    int goodReception;
+    int socketNumber;
 
-    //TEST
-    std::cout << "Connection with " << server->getSocketDescriptor() << " established!" << std::endl;
 
     for(int i=0;i<numberOfDrivers;++i) {
         //only now we accept.
-        goodReception= server->acceptClient();
-        if (goodReception < 0) {
+        socketNumber= server->acceptOneClient();
+        threadInfo->setSocketNumber(socketNumber);
+        if (socketNumber < 0) {
             //return an error represent error at this method
             cout << "Connection not established!" << endl;
         }else {
@@ -157,7 +160,7 @@ void* getNewClients(void* threadInformation) {
             pthread_join(myThread,NULL);
 
             //TEST
-            std::cout << "Connection with " << server->getSocketDescriptor() << " established!" << std::endl;
+            std::cout << "Connection with " << socketNumber << " established!" << std::endl;
         }
     }
 }
@@ -177,10 +180,11 @@ void* clientHandler(void *threadInformation) {
     TaxiCenter* taxiCenter = mainFlow->getTaxiCenter();
     Socket* socket = threadInfo->getSocket();
     int port = threadInfo->getPort();
+    int socketNumber = threadInfo->getSocketNumber();
     std::vector<std::string> addObstacles = threadInfo->getAddObstacles();
 
     //RECEIVING SERIALIZED DRIVER AND ADDING HIM TO TAXI CENTER.
-    socket->reciveData(buffer, sizeof(buffer));
+    socket->reciveData(buffer, sizeof(buffer),socketNumber);
     string str1(buffer, sizeof(buffer));
     std::string driverInfo;
     boost::iostreams::basic_array_source<char> device1(str1.c_str(), str1.size());
@@ -209,13 +213,13 @@ void* clientHandler(void *threadInformation) {
     boost::archive::binary_oarchive oa2(s2);
     oa2 << mapInfo;
     s2.flush();
-    socket->sendData(mapInfoSerialized);
+    socket->sendData(mapInfoSerialized,socketNumber);
 
     //TEST
     std:: cout << "just sent map info data: "<< mapInfo << std::endl;
 
     //FAKE RECEIVE
-    socket->reciveData(buffer, sizeof(buffer));
+    socket->reciveData(buffer, sizeof(buffer),socketNumber);
     string str9(buffer, sizeof(buffer));
     std::string fake9;
     boost::iostreams::basic_array_source<char> device9(str9.c_str(), str9.size());
@@ -275,7 +279,7 @@ void* clientHandler(void *threadInformation) {
     oa3 << taxiInfo;
     s3.flush();
     std::cout << "sending taxi info: " << taxiInfo << std::endl;
-    socket->sendData(taxiInfoSerialized);
+    socket->sendData(taxiInfoSerialized, socketNumber);
 
     //INFINITE LOOP CHECKS WHAT THE MAP VALUE OF A SPECIFIC DRIVER ID IS AND TELLS HIM WHAT TO DO.
     int blabla2 = instructionsMap.find(driverId)->second.front();
@@ -291,7 +295,7 @@ void* clientHandler(void *threadInformation) {
             instructionsMap.find(driverId)->second.pop();
 
             //FAKE RECEIVE
-            socket->reciveData(buffer, sizeof(buffer));
+            socket->reciveData(buffer, sizeof(buffer), socketNumber);
             string str7(buffer, sizeof(buffer));
             std::string fake7;
             boost::iostreams::basic_array_source<char> device7(str7.c_str(), str7.size());
@@ -355,7 +359,7 @@ void* clientHandler(void *threadInformation) {
             boost::archive::binary_oarchive oa4(s4);
             oa4 << tripParts;
             s4.flush();
-            socket->sendData(serial_str4);
+            socket->sendData(serial_str4, socketNumber);
             tripParts.clear();
         }
 
@@ -365,7 +369,7 @@ void* clientHandler(void *threadInformation) {
             instructionsMap.find(driverId)->second.pop();
 
             //FAKE RECEIVE
-            socket->reciveData(buffer, sizeof(buffer));
+            socket->reciveData(buffer, sizeof(buffer), socketNumber);
             string str10(buffer, sizeof(buffer));
             std::string fake10;
             boost::iostreams::basic_array_source<char> device10(str10.c_str(), str10.size());
@@ -400,7 +404,7 @@ void* clientHandler(void *threadInformation) {
             boost::archive::binary_oarchive oa5(s5);
             oa5 << tripParts2;
             s5.flush();
-            socket->sendData(serial_str5);
+            socket->sendData(serial_str5, socketNumber);
             tripParts2.clear();
 
             taxiCenter->getTo();
@@ -416,7 +420,7 @@ void* clientHandler(void *threadInformation) {
     //IF THE NUMBER IN THE MAP FOR THIS DRIVER IS 7 WE NOTIFY THE CLIENT AND THE THREAD DIES.
 
     //FAKE RECEIVE
-    socket->reciveData(buffer, sizeof(buffer));
+    socket->reciveData(buffer, sizeof(buffer), socketNumber);
     string str11(buffer, sizeof(buffer));
     std::string fake11;
     boost::iostreams::basic_array_source<char> device11(str11.c_str(), str11.size());
@@ -433,7 +437,7 @@ void* clientHandler(void *threadInformation) {
     boost::archive::binary_oarchive oa6(s6);
     oa6 << exitFlag;
     s6.flush();
-    socket->sendData(serial_str6);
+    socket->sendData(serial_str6, socketNumber);
 
 }
 
