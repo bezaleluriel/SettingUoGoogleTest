@@ -389,7 +389,7 @@ void* clientHandler(void *threadInformation) {
 
     //IF THE NUMBER IN THE MAP FOR THIS DRIVER IS 7 WE NOTIFY THE CLIENT AND THE THREAD DIES.
     std::string exitFlag;
-    exitFlag += '7';//flag
+    exitFlag += '7';//flag n jhj
     std::string serial_str6;
     boost::iostreams::back_insert_device<std::string> inserter6(serial_str6);
     boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s6(inserter6);
