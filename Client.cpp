@@ -52,7 +52,6 @@ int main(int argc, char *argv[])  {
     oa1 << info;
     s1.flush();
     client->sendData(serial_str1);
-    usleep(1);
 
     //TEST
     std::cout << "send driver info: " << info <<std::endl;
@@ -60,7 +59,6 @@ int main(int argc, char *argv[])  {
 
     //RECEIVING SERIALIZE MAP INFO.
     client->reciveData(buffer, sizeof(buffer));
-    usleep(1);
     string str2(buffer, sizeof(buffer));
     std::string mapInfo;
     boost::iostreams::basic_array_source<char> device2(str2.c_str(), str2.size());
@@ -81,10 +79,19 @@ int main(int argc, char *argv[])  {
     //TEST
     std::cout << "received the map info serialization: "<< mapInfo <<std::endl;
 
+    //FAKE SEND
+    std::string fake9 = "1";
+    std::string serial_str9;
+    boost::iostreams::back_insert_device<std::string> inserter9(serial_str9);
+    boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s9(inserter9);
+    boost::archive::binary_oarchive oa9(s9);
+    oa9 << fake9;
+    s9.flush();
+    client->sendData(serial_str9);
+
     //RECEIVING SERIALIZED TAXI CAB.
     std::cout << "about to receive a serialized taxi cab "<< std::endl;
     client->reciveData(buffer, sizeof(buffer));
-     usleep(1);
     std::cout << "after receive data "<< std::endl;
 
     string str3(buffer, sizeof(buffer));
@@ -149,10 +156,18 @@ int main(int argc, char *argv[])  {
     //RECEIVING A STRING FROM SERVER WE WILL NOW CHOOSE WHAT TO DO ACCORDING TO THE FLAG IN BEGINNING.
     std::string choice = "0";
     while( atoi(choice.c_str()) != 7){
-        //sleep(5);
-        //todo a lot of sleep
+
+        //FAKE SEND
+        std::string fake8= "1";
+        std::string serial_str8;
+        boost::iostreams::back_insert_device<std::string> inserter8(serial_str8);
+        boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s8(inserter8);
+        boost::archive::binary_oarchive oa8(s8);
+        oa8 << fake8;
+        s8.flush();
+        client->sendData(serial_str8);
+
         client->reciveData(buffer, sizeof(buffer));
-       sleep(1);
         //DESERIALIZATION OF TRIP INFO.
         string str4(buffer, sizeof(buffer));
         boost::iostreams::basic_array_source<char> device4(str4.c_str(), str4.size());
@@ -162,10 +177,7 @@ int main(int argc, char *argv[])  {
 
         //TEST
         std::cout << "choice string received from client: " <<choice << std::endl;
-//        //todo - delete this
-//        if ((driver->getLocation()->getPoint().getX() == 2) && (driver->getLocation()->getPoint().getY() == 2)){
-//            exit(0);
-//        }
+
         //SPLITTING CHOICE STRING TO PARTS:
         std::vector<std::string> vec4 = beginningInfoReader.split(choice);
 
@@ -220,6 +232,7 @@ int main(int argc, char *argv[])  {
             //going through drivers list telling the unavailable ones to get to end point of their trip info.
             driverIt = clientDriversList.begin();
             while(driverIt != clientDriversList.end()){
+
                 if(!((*(driverIt))->getAvailable())){
 
                     //TESTS
@@ -255,6 +268,8 @@ int main(int argc, char *argv[])  {
                     driverIt++;
                 }
             }
+
+
             //COMPLETE THE TRIP FUNC
             tripInfoIt = clientTripInformationList.begin();
             while(clientTripInformationList.size()>0){
@@ -267,6 +282,7 @@ int main(int argc, char *argv[])  {
                 }
             }
         }
+
     }
 
     //WE WILL GET TO THIS POINT WHEN WE RECEIVE THE 7 FLAG FROM SERVER.

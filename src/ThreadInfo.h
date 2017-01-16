@@ -24,7 +24,7 @@ public:
     MainFlow* getMainFlow();
     int getPort();
     Socket* getSocket();
-    int getNumberOfDrivers();
+    int getNumberOfDrivers() ;
     void setMainflow( MainFlow* mainflow);
     void setSocket(Socket *socket);
     void setPort(int port);
@@ -32,5 +32,6 @@ public:
     vector<string> &getAddObstacles();
     void setAddObstacles(const vector<string> &addObstacles);
 };
+
 
 #endif //SETTINGUOGOOGLETEST_THREADINFO_H
