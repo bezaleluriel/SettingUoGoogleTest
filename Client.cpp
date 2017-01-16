@@ -6,7 +6,7 @@
 #include "src/StandardCab.h"
 #include "src/LuxuryCab.h"
 
-//DECLERATIONSd
+// DECLERATIONSd
 //void* createRoute(void* driver1);
 
 //MAIN
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])  {
     }
 
     //TEST FOR RECEIVING CAB FROM SERVER:
-    std::cout << "this is a test for receiving the serialized cab id&taxitype:"<< std::endl;
+    std::cout << "this  is a test for receiving the serialized cab id&taxitype:"<< std::endl;
     std::cout << taxi->getCabId() << "," ;
     std::cout << taxi->getTaxiType() << std::endl;
 
